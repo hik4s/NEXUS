@@ -1,0 +1,8 @@
+aws_region         = "us-east-1"
+project_name       = "nexus"
+environment        = "production"
+backend_image      = "000000000000.dkr.ecr.us-east-1.amazonaws.com/nexus-production-backend:0.18.0"
+storage_bucket_name = "replace-with-globally-unique-nexus-bucket"
+db_password        = "replace-with-a-strong-password"
+app_secret_key     = "replace-with-a-long-random-secret"
+cors_origins       = "https://your-frontend.example"

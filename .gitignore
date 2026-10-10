@@ -1,0 +1,50 @@
+# Python caches and test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+
+# Local databases, uploaded files, and runtime data
+*.db
+*.sqlite
+*.sqlite3
+data/storage/
+postgres_data/
+redis_data/
+*.log
+
+# Node / frontend build artifacts
+node_modules/
+dist/
+.vite/
+coverage/
+
+# IDE and operating system
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Playwright output
+playwright-report/
+test-results/
+
+# Terraform generated state, plans, and real variable files
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+!*.tfvars.example
+crash.log
