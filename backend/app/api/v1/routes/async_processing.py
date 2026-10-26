@@ -58,7 +58,10 @@ def run_job_route(
     job = db.scalar(select(BackgroundJob).where(BackgroundJob.id == job_id, BackgroundJob.company_id == current_user.company_id))
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
-    return run_job(db, job.id)
+    result = run_job(db, job.id)
+    if result is None:
+        raise HTTPException(status_code=409, detail="Job is already running or finished")
+    return result
 
 
 @router.post("/schedules", response_model=JobScheduleRead, status_code=status.HTTP_201_CREATED)
@@ -91,7 +94,7 @@ def tick_scheduler(
     current_user: User = Depends(require_permission("platform:jobs")),
     db: Session = Depends(get_db),
 ):
-    job_ids = run_scheduler_tick(db)
+    job_ids = run_scheduler_tick(db, company_id=current_user.company_id)
     return {"enqueued_job_ids": job_ids}
 
 
