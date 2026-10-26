@@ -513,6 +513,9 @@ Nenhuma escolha importante deve ser inferida como decisão final só porque exis
 - Correções seguintes, reproduzidas primeiro por testes: job em execução não pode ser executado novamente; claim usa atualização condicional de `queued` para `running`; execução manual de job não disponível retorna HTTP 409; tick manual do scheduler é limitado à empresa autenticada (scheduler de serviço permanece global).
 - Regressão após as correções: 69 testes aprovados, 1 teste Redis ignorado e 1 aviso de depreciação; migrations e Alembic check passaram em SQLite novo. PostgreSQL/Redis reais permanecem pendentes.
 - Publicação da branch bloqueada pela revisão automática de autorização para envio externo de código ao GitHub. Commits locais não comprovam execução remota; obter autorização específica antes de repetir o push.
+- Atualização após autorização específica: alterações publicadas via conexão GitHub na branch `fix/ci-migration-baseline`, com conteúdo idêntico ao validado localmente (commit remoto `c514026`). PR de revisão: https://github.com/hik4s/NEXUS/pull/1; `main` permanece sem alterações.
+- Validação real concluída em 2026-10-26: execução backend https://github.com/hik4s/NEXUS/actions/runs/40393047874 passou nos jobs SQLite e PostgreSQL. O job PostgreSQL 17 aplicou migrations, executou Alembic check e a suíte com teste Redis 8 habilitado. Build frontend também passou: https://github.com/hik4s/NEXUS/actions/runs/40393047854.
+- Limites: teste Redis cobre conexão e ordem/publicação/consumo da fila; não equivale a validar recuperação de falhas, múltiplos processos ou scheduler sob carga. Backup/restore, deploy AWS, provedor real de IA e jornadas completas de frontend permanecem pendentes.
 
 - **1.0 — 2026-10-10:** consolidada visão do produto, conceitos arquiteturais, objetivos, identidade visual baseada no frontend do checkpoint v0.18, trilhas, gates de qualidade, estado conhecido e plano de retomada.
 
