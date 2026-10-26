@@ -197,3 +197,59 @@ def test_job_dead_letters_after_max_attempts():
         assert second.status == "dead_letter"
         assert second.attempts == 2
         assert second.last_error == "permanent failure"
+
+
+def test_running_job_is_not_executed_a_second_time():
+    with TestClient(app), SessionLocal() as db:
+        job = BackgroundJob(
+            kind="in.progress", payload={}, status="running", attempts=1,
+            max_attempts=3, available_at=datetime.now(timezone.utc),
+            started_at=datetime.now(timezone.utc),
+        )
+        db.add(job)
+        db.commit()
+        calls = []
+
+        def handler(_, payload):
+            calls.append(payload)
+            return {"ok": True}
+
+        result = run_job(db, job.id, handlers={"in.progress": handler})
+        assert result is None
+        assert calls == []
+        db.refresh(job)
+        assert job.status == "running"
+        assert job.attempts == 1
+
+
+def test_manual_run_of_completed_job_returns_conflict():
+    with TestClient(app) as client:
+        suffix = uuid4().hex[:8]
+        token = register(client, f"Completed {suffix}", f"completed-{suffix}@example.com")
+        response = client.post("/api/v1/async/jobs", headers=auth(token),
+                               json={"kind": "noop", "payload": {}})
+        assert response.status_code == 201
+        url = f"/api/v1/async/jobs/{response.json()['id']}/run"
+        assert client.post(url, headers=auth(token)).status_code == 200
+        assert client.post(url, headers=auth(token)).status_code == 409
+
+
+def test_manual_scheduler_tick_only_enqueues_current_company():
+    with TestClient(app) as client, SessionLocal() as db:
+        suffix = uuid4().hex[:8]
+        token_a = register(client, f"Schedule A {suffix}", f"schedule-a-{suffix}@example.com")
+        token_b = register(client, f"Schedule B {suffix}", f"schedule-b-{suffix}@example.com")
+        schedules = []
+        for token in (token_a, token_b):
+            response = client.post("/api/v1/async/schedules", headers=auth(token), json={
+                "kind": "noop", "payload": {}, "interval_seconds": 60,
+                "next_run_at": (datetime.now(timezone.utc) - timedelta(seconds=1)).isoformat(),
+            })
+            assert response.status_code == 201, response.text
+            schedules.append(response.json())
+        response = client.post("/api/v1/async/scheduler/tick", headers=auth(token_a))
+        assert response.status_code == 200, response.text
+        assert len(response.json()["enqueued_job_ids"]) == 1
+        assert client.get("/api/v1/async/jobs", headers=auth(token_b)).json() == []
+        other = db.get(JobSchedule, __import__("uuid").UUID(schedules[1]["id"]))
+        assert other.last_enqueued_at is None

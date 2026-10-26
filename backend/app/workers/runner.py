@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Any
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -26,14 +26,19 @@ def _claim_job(db: Session, job_id: UUID | None = None) -> BackgroundJob | None:
     if job_id is not None:
         stmt = select(BackgroundJob).where(BackgroundJob.id == job_id)
     job = db.scalar(stmt)
-    if job is None or job.status not in {"queued", "running"}:
+    if job is None or job.status != "queued":
         return None
-    if job.status == "running":
-        return job
-    job.status = "running"
-    job.attempts += 1
-    job.started_at = utcnow()
-    job.last_error = None
+    # Only one worker may transition a queued job, even if several read it.
+    claimed = db.execute(
+        update(BackgroundJob)
+        .where(BackgroundJob.id == job.id, BackgroundJob.status == "queued")
+        .values(status="running", attempts=BackgroundJob.attempts + 1,
+                started_at=utcnow(), last_error=None)
+        .execution_options(synchronize_session=False)
+    )
+    if claimed.rowcount != 1:
+        db.rollback()
+        return None
     db.commit()
     db.refresh(job)
     return job

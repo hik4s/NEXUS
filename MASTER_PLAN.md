@@ -510,6 +510,9 @@ Nenhuma escolha importante deve ser inferida como decisão final só porque exis
 - Continuação: workflow preparado para PostgreSQL 17 e Redis 8 reais, além da regressão SQLite; teste Redis opt-in verifica publicação, ordem e consumo sem mock e usa chave isolada. Sua execução remota ainda precisa ser observada.
 - Frontend: `package-lock.json` gerado para instalação reproduzível e workflow de build acrescentado. `npm ci --ignore-scripts` e `npm run build` passaram localmente. Isso não comprova jornadas de interface.
 - Verificação local atual: migrations em banco SQLite novo, `alembic check` sem diferenças, 66 testes aprovados e 1 teste Redis explicitamente ignorado por ausência do serviço; 1 aviso de depreciação de dependência.
+- Correções seguintes, reproduzidas primeiro por testes: job em execução não pode ser executado novamente; claim usa atualização condicional de `queued` para `running`; execução manual de job não disponível retorna HTTP 409; tick manual do scheduler é limitado à empresa autenticada (scheduler de serviço permanece global).
+- Regressão após as correções: 69 testes aprovados, 1 teste Redis ignorado e 1 aviso de depreciação; migrations e Alembic check passaram em SQLite novo. PostgreSQL/Redis reais permanecem pendentes.
+- Publicação da branch bloqueada pela revisão automática de autorização para envio externo de código ao GitHub. Commits locais não comprovam execução remota; obter autorização específica antes de repetir o push.
 
 - **1.0 — 2026-10-10:** consolidada visão do produto, conceitos arquiteturais, objetivos, identidade visual baseada no frontend do checkpoint v0.18, trilhas, gates de qualidade, estado conhecido e plano de retomada.
 
