@@ -8,6 +8,17 @@ O NEXUS explora a integração entre clientes, vendas, estoque, compras e finan�
 
 [![Backend](https://github.com/hik4s/NEXUS/actions/workflows/backend.yml/badge.svg)](https://github.com/hik4s/NEXUS/actions/workflows/backend.yml)
 
+## MVP ativo de portfólio
+
+A próxima entrega fecha **importar pedidos CSV → revisar → gerar rascunhos → confirmar venda → atualizar estoque → gerar recebível → cancelar com reversão**.
+
+A arquitetura alvo usa **React/TypeScript + FastAPI + PostgreSQL**, com frontend/API no Render e banco no Neon. A interface atual ainda é React/JavaScript; importação de pedidos e deploy estão pendentes. No perfil gratuito, o recorte não exige worker permanente, Redis ou arquivos locais persistentes.
+
+- [Escopo, arquitetura e critérios de aceite](docs/MVP_PORTFOLIO.md)
+- [O que será mantido, adaptado e adiado](docs/REUSE_AUDIT_2026-11-08.md)
+- [Plano de implementação M0–M6](docs/superpowers/plans/2026-11-08-nexus-portfolio-mvp.md)
+- [Decisão Render + Neon](docs/adr/0002-portfolio-render-neon.md)
+
 ## Stack e organização
 
 | Camada | Tecnologias |
@@ -114,15 +125,14 @@ O [workflow backend](.github/workflows/backend.yml) instala dependências, compi
 
 ## Próximas entregas prioritárias
 
-1. Validar migrações e isolamento entre empresas com PostgreSQL em ambiente de teste.
-2. Registrar uma jornada reproduzível de venda → estoque → recebível → cancelamento.
-3. Validar retry, idempotência e recuperação dos workers diante de falhas.
-4. Entregar as telas desse fluxo, com estados de carregamento, erro e sucesso.
-5. Revisar a sessão do frontend, acessibilidade e testes de interface.
-6. Fixar dependências frontend e versionar o lockfile para builds reproduzíveis.
-7. Adicionar screenshots, vídeo e demonstração com dados fictícios.
+1. M0: comprovar baseline e migrações com PostgreSQL.
+2. M1: endurecer atomicidade, concorrência e idempotência de vendas/estoque/recebíveis.
+3. M2: implementar revisão/importação de pedidos, separada do importador de clientes existente.
+4. M3–M4: migrar UI para TypeScript e entregar a jornada com testes E2E e CI.
+5. M5: configurar Render + Neon e validar persistência, cold start e acesso entre empresas.
+6. M6: publicar release, vídeo, screenshots e relatório de testes.
 
-Nenhum desses itens exige provisionar AWS para demonstrar o MVP local. A infraestrutura cloud deve ser tratada como código a validar, sem assumir experiência operacional já comprovada.
+Workers, IA e AWS são evoluções posteriores. O código existente é preservado; a existência de serviços ou configurações não comprova homologação operacional.
 
 ## Documentação
 

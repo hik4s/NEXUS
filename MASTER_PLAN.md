@@ -1,5 +1,46 @@
 # NEXUS — Master Plan
 
+> **Atualização ativa: 2026-11-08 — MVP de portfólio web.**
+>
+> A arquitetura e o recorte atuais estão em [MVP_PORTFOLIO.md](docs/MVP_PORTFOLIO.md). Esta atualização prevalece sobre prioridades e infraestrutura de fases anteriores abaixo. A visão ampla de produto permanece como evolução.
+>
+> **Stack alvo:** React/TypeScript + FastAPI + PostgreSQL/SQLAlchemy/Alembic.
+> **Publicação alvo:** frontend/API no Render e PostgreSQL no Neon, dentro das cotas gratuitas. Configuração e deploy ainda pendentes.
+> **Jornada:** importar CSV de pedidos → revisar inconsistências → gerar rascunhos → confirmar venda → baixar estoque → gerar recebível → cancelar com reversão consistente.
+>
+> **Estratégia:** aproveitar autenticação, RBAC, catálogo, vendas, estoque, recebíveis, auditoria e testes. Adaptar frontend, transações e CI. Criar importação de pedidos; o importador existente é de clientes.
+>
+> **Execução gratuita:** revisão persistida no PostgreSQL, CSV limitado, sem arquivo original persistente e sem worker/Redis obrigatório. IA, workers contínuos, AWS, desktop/offline e módulos adicionais não são gates deste MVP.
+
+## Documentos ativos
+
+| Documento | Responsabilidade |
+| --- | --- |
+| [MVP de portfólio](docs/MVP_PORTFOLIO.md) | Arquitetura, escopo, contratos, limites e aceite |
+| [Inventário de reaproveitamento](docs/REUSE_AUDIT_2026-11-08.md) | Código encontrado, lacunas e decisões manter/adaptar/adiar |
+| [ADR 0002](docs/adr/0002-portfolio-render-neon.md) | Escolha de hospedagem e consequências |
+| [Plano de implementação](docs/superpowers/plans/2026-11-08-nexus-portfolio-mvp.md) | Tarefas, arquivos, interfaces e verificações |
+
+## Checkpoint do recorte ativo
+
+- [x] Inspeção estática do baseline main 9e64214531f491ec0dabbd20e13f694afccd901c.
+- [x] Arquitetura e MVP registrados.
+- [x] Decisões de reaproveitamento registradas.
+- [ ] M0 — Baseline e migrações no PostgreSQL, com evidências de execução.
+- [ ] M1 — Atomicidade, concorrência e idempotência de vendas/estoque/recebível.
+- [ ] M2 — Importação e revisão persistida de pedidos.
+- [ ] M3 — Interface TypeScript com jornada integrada.
+- [ ] M4 — CI e demonstração local reproduzível com E2E.
+- [ ] M5 — Publicação Render + Neon e smoke tests reais.
+- [ ] M6 — Release, vídeo, screenshots e validação de portfólio.
+
+**Próxima implementação:** M0 / Task 1 do plano. Esta atualização altera documentação, não executa serviços, testes de aplicação nem provisiona recursos.
+
+## Plano anterior — contexto e evolução futura
+
+As seções seguintes preservam a visão ampla e o checkpoint anterior. Menções a B9/AWS, “próxima etapa” ou escopo de ERP abaixo são históricas; não substituem a sequência M0–M6 acima.
+
+
 > **Documento mestre do produto, arquitetura, identidade visual e execução**  
 > Versão: 1.0 · Atualizado em: 10 de outubro de 2026  
 > Baseline recuperado: `v0.18.0 — B9 Cloud` · checkpoint local `e46cdcb`  

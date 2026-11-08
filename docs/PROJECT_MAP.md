@@ -1,36 +1,33 @@
-# NEXUS — Project Map
+# Mapa do NEXUS
 
-## Backend domains
+Atualizado em 2026-11-08.
 
-```text
-Identity / RBAC / Audit
-        ↓
-CRM → Sales → Inventory ← Procurement
-                 ↓              ↓
-                 └──────────── Finance
-                 ↓
-              Logistics
-                 ↓
-              Workflow
-                 ↓
-        Intelligence / AI
-```
+## Documentação ativa
 
-## Official backend status
+- [MVP de portfólio](MVP_PORTFOLIO.md): arquitetura, fluxo, contratos, limites e aceite.
+- [Inventário de reaproveitamento](REUSE_AUDIT_2026-11-08.md): leitura do baseline e decisões.
+- [ADR de hospedagem](adr/0002-portfolio-render-neon.md): Render + Neon.
+- [Plano de implementação](superpowers/plans/2026-11-08-nexus-portfolio-mvp.md): tarefas e verificações.
+- [Master plan](../MASTER_PLAN.md): checkpoint ativo e histórico da visão ampla.
 
-```text
-B0 Foundation                 ✅
-B1 Persistence                🟡 runtime PostgreSQL pending
-B2 Identity/Security           ✅
-B3 Core Domains                ✅
-B4 Contracts/Platform          ✅
-B5 Async Processing             ✅
-B6 Automation/Integrations      ✅
-B7 Intelligence API             ✅
-B8 Quality/Security/Observability ✅
-B9 Cloud                        ✅* 
-```
+## Código existente
 
-`*` B9 is artifact-complete and locally validated as configuration/code; runtime AWS validation remains pending actual cloud access.
+| Área | Diretório |
+| --- | --- |
+| Rotas REST | backend/app/api/v1/routes |
+| Regras de negócio | backend/app/services |
+| Contratos de entrada/saída | backend/app/schemas |
+| Modelos SQLAlchemy | backend/app/models |
+| Identidade e papéis | backend/app/identity e backend/app/rbac |
+| Auditoria | backend/app/audit |
+| Migrações | backend/alembic/versions |
+| Testes backend | backend/tests |
+| UI React/JavaScript inicial | frontend/src |
+| Workers e IA preservados | backend/app/workers e backend/app/intelligence |
+| Infra AWS futura | infra/terraform |
 
-NEXUS remains a modular monolith. Cloud deployment runs the API, worker and scheduler as separate ECS Fargate services sharing the same backend image and domain modules.
+O backend não possui uma camada de repositórios de dados implementada apenas por existir a pasta repositories. Os serviços usam Session/SQLAlchemy diretamente. Seguir esse padrão onde suficiente.
+
+## Novidades planejadas
+
+Parser e revisão de pedidos, tabelas próprias de importação, UI React/TypeScript por funcionalidade, CI PostgreSQL/frontend/E2E, seed fictício e render.yaml. Esses elementos são planejamento, não arquivos existentes no baseline.
