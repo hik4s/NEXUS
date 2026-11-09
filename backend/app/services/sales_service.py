@@ -47,7 +47,7 @@ def _assert_discount_permission(db: Session, actor: User, line_discount: Decimal
         )
 
 
-def create_order(db: Session, actor: User, payload: SalesOrderCreate, request=None) -> SalesOrder:
+def create_order(db: Session, actor: User, payload: SalesOrderCreate, request=None, *, commit: bool = True) -> SalesOrder:
     if payload.customer_id is not None:
         _get_customer(db, actor.company_id, payload.customer_id)
 
@@ -135,7 +135,10 @@ def create_order(db: Session, actor: User, payload: SalesOrderCreate, request=No
             "total": str(order.total),
         },
     )
-    db.commit()
+    if commit:
+        db.commit()
+    else:
+        db.flush()
     return get_order(db, actor.company_id, order.id)
 
 
@@ -169,6 +172,24 @@ def update_order_status(
     payload: SalesOrderStatusUpdate,
     request=None,
 ) -> SalesOrder:
+    try:
+        # Re-read under the lock: callers may have loaded an obsolete ORM snapshot.
+        locked = db.scalar(
+            select(SalesOrder)
+            .where(SalesOrder.id == order.id, SalesOrder.company_id == actor.company_id)
+            .options(selectinload(SalesOrder.items), selectinload(SalesOrder.fulfillment))
+            .with_for_update()
+            .execution_options(populate_existing=True)
+        )
+        if locked is None:
+            raise HTTPException(status_code=404, detail="Order not found")
+        return _update_order_status(db, actor, locked, payload, request=request)
+    except Exception:
+        db.rollback()
+        raise
+
+
+def _update_order_status(db, actor, order, payload, request=None) -> SalesOrder:
     if payload.status not in ALLOWED_TRANSITIONS.get(order.status, set()):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,

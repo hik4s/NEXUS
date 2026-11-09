@@ -11,7 +11,7 @@ from app.models.finance import AccountsPayable, AccountsReceivable, FinancialAcc
 from app.models.order import SalesOrder
 from app.models.procurement import PurchaseReceipt
 from app.models.user import User
-from app.schemas.finance import FinancialAccountCreate, FinancialTransactionCreate, PaymentCreate
+from app.schemas.finance import FinancialAccountCreate, FinancialTransactionCreate, PaymentCreate, ReceivableRead, PayableRead
 
 
 def _account(db: Session, company_id: UUID, account_id: UUID) -> FinancialAccount:
@@ -21,17 +21,20 @@ def _account(db: Session, company_id: UUID, account_id: UUID) -> FinancialAccoun
     return account
 
 
-def _normalize_status(item: AccountsReceivable | AccountsPayable) -> None:
+def _effective_status(item: AccountsReceivable | AccountsPayable) -> str:
     if item.status in {"paid", "cancelled"}:
-        return
+        return item.status
     if item.paid_amount >= item.amount:
-        item.status = "paid"
+        return "paid"
     elif item.paid_amount > 0:
-        item.status = "partially_paid"
+        return "partially_paid"
     elif item.due_date < date.today():
-        item.status = "overdue"
-    else:
-        item.status = "pending"
+        return "overdue"
+    return "pending"
+
+
+def _normalize_status(item: AccountsReceivable | AccountsPayable) -> None:
+    item.status = _effective_status(item)
 
 
 def list_accounts(db: Session, company_id: UUID) -> list[FinancialAccount]:
@@ -57,23 +60,19 @@ def create_account(db: Session, actor: User, payload: FinancialAccountCreate, re
     return account
 
 
-def list_receivables(db: Session, company_id: UUID, status_filter: str | None = None) -> list[AccountsReceivable]:
+def list_receivables(db: Session, company_id: UUID, status_filter: str | None = None) -> list[ReceivableRead]:
     items = list(db.scalars(select(AccountsReceivable).where(AccountsReceivable.company_id == company_id).order_by(AccountsReceivable.due_date, AccountsReceivable.created_at)).all())
-    for item in items:
-        _normalize_status(item)
-    if items:
-        db.commit()
+    # Project due-date status into response snapshots; GETs must not write back
+    # an obsolete ORM status over a concurrent payment or cancellation.
+    items = [ReceivableRead.model_validate(item).model_copy(update={"status": _effective_status(item)}) for item in items]
     if status_filter:
         return [item for item in items if item.status == status_filter]
     return items
 
 
-def list_payables(db: Session, company_id: UUID, status_filter: str | None = None) -> list[AccountsPayable]:
+def list_payables(db: Session, company_id: UUID, status_filter: str | None = None) -> list[PayableRead]:
     items = list(db.scalars(select(AccountsPayable).where(AccountsPayable.company_id == company_id).order_by(AccountsPayable.due_date, AccountsPayable.created_at)).all())
-    for item in items:
-        _normalize_status(item)
-    if items:
-        db.commit()
+    items = [PayableRead.model_validate(item).model_copy(update={"status": _effective_status(item)}) for item in items]
     if status_filter:
         return [item for item in items if item.status == status_filter]
     return items
@@ -130,7 +129,11 @@ def ensure_receivable_for_sales_order(db: Session, actor: User, order: SalesOrde
 
 
 def cancel_receivable_for_sales_order(db: Session, actor: User, order: SalesOrder, request=None) -> None:
-    receivable = db.scalar(select(AccountsReceivable).where(AccountsReceivable.company_id == actor.company_id, AccountsReceivable.sales_order_id == order.id))
+    receivable = db.scalar(
+        select(AccountsReceivable)
+        .where(AccountsReceivable.company_id == actor.company_id, AccountsReceivable.sales_order_id == order.id)
+        .with_for_update().execution_options(populate_existing=True)
+    )
     if receivable is None or receivable.status == "cancelled":
         return
     if receivable.paid_amount > 0:
@@ -165,7 +168,11 @@ def ensure_payable_for_purchase_receipt(db: Session, actor: User, receipt: Purch
 
 
 def _get_receivable(db: Session, company_id: UUID, item_id: UUID) -> AccountsReceivable:
-    item = db.scalar(select(AccountsReceivable).where(AccountsReceivable.id == item_id, AccountsReceivable.company_id == company_id))
+    item = db.scalar(
+        select(AccountsReceivable)
+        .where(AccountsReceivable.id == item_id, AccountsReceivable.company_id == company_id)
+        .with_for_update().execution_options(populate_existing=True)
+    )
     if item is None:
         raise HTTPException(status_code=404, detail="Receivable not found")
     _normalize_status(item)
@@ -231,12 +238,9 @@ def pay_payable(db: Session, actor: User, payable_id: UUID, payload: PaymentCrea
 def summary(db: Session, company_id: UUID) -> dict[str, Decimal]:
     receivables = list(db.scalars(select(AccountsReceivable).where(AccountsReceivable.company_id == company_id)).all())
     payables = list(db.scalars(select(AccountsPayable).where(AccountsPayable.company_id == company_id)).all())
-    for item in receivables + payables:
-        _normalize_status(item)
-    db.commit()
     accounts_total = db.scalar(select(func.coalesce(func.sum(FinancialAccount.current_balance), 0)).where(FinancialAccount.company_id == company_id, FinancialAccount.is_active == True)) or Decimal("0")
-    open_ar = sum((item.amount - item.paid_amount for item in receivables if item.status not in {"paid", "cancelled"}), Decimal("0"))
-    open_ap = sum((item.amount - item.paid_amount for item in payables if item.status not in {"paid", "cancelled"}), Decimal("0"))
-    overdue_ar = sum((item.amount - item.paid_amount for item in receivables if item.status == "overdue"), Decimal("0"))
-    overdue_ap = sum((item.amount - item.paid_amount for item in payables if item.status == "overdue"), Decimal("0"))
+    open_ar = sum((item.amount - item.paid_amount for item in receivables if _effective_status(item) not in {"paid", "cancelled"}), Decimal("0"))
+    open_ap = sum((item.amount - item.paid_amount for item in payables if _effective_status(item) not in {"paid", "cancelled"}), Decimal("0"))
+    overdue_ar = sum((item.amount - item.paid_amount for item in receivables if _effective_status(item) == "overdue"), Decimal("0"))
+    overdue_ap = sum((item.amount - item.paid_amount for item in payables if _effective_status(item) == "overdue"), Decimal("0"))
     return {"total_cash": accounts_total, "accounts_receivable_open": open_ar, "accounts_payable_open": open_ap, "overdue_receivable": overdue_ar, "overdue_payable": overdue_ap}

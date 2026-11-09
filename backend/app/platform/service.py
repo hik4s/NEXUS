@@ -290,6 +290,7 @@ def begin_idempotency(
     key: str | None,
     payload: Any,
 ) -> tuple[IdempotencyRecord | None, JSONResponse | None]:
+    """Reserve a key in the caller's transaction; never commit independently."""
     if not key:
         return None, None
     if len(key) > MAX_IDEMPOTENCY_KEY_LENGTH or not key.strip():
@@ -319,7 +320,9 @@ def begin_idempotency(
     )
     db.add(record)
     try:
-        db.commit()
+        # The reservation and business result must commit together. A competing
+        # insert waits on the unique constraint and can replay the committed result.
+        db.flush()
     except IntegrityError:
         db.rollback()
         existing = db.scalar(
@@ -335,11 +338,12 @@ def begin_idempotency(
 
 
 def complete_idempotency(db: Session, record: IdempotencyRecord, status_code: int, body: dict | list) -> None:
+    """Persist the replay data; the caller commits it with the business effects."""
     record.state = "completed"
     record.response_status = status_code
     record.response_body = body
     record.completed_at = datetime.now(timezone.utc)
-    db.commit()
+    db.flush()
 
 
 def abort_idempotency(db: Session, record: IdempotencyRecord) -> None:

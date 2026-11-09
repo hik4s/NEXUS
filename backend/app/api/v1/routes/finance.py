@@ -23,7 +23,7 @@ def create_financial_account(payload: FinancialAccountCreate, request: Request, 
 
 
 @router.get("/receivables", response_model=list[ReceivableRead])
-def get_receivables(status_filter: str | None = None, current_user: User = Depends(require_permission("finance:read")), db: Session = Depends(get_db)) -> list[AccountsReceivable]:
+def get_receivables(status_filter: str | None = None, current_user: User = Depends(require_permission("finance:read")), db: Session = Depends(get_db)) -> list[ReceivableRead]:
     return list_receivables(db, current_user.company_id, status_filter)
 
 
@@ -33,7 +33,7 @@ def pay_receivable_route(receivable_id: UUID, payload: PaymentCreate, request: R
 
 
 @router.get("/payables", response_model=list[PayableRead])
-def get_payables(status_filter: str | None = None, current_user: User = Depends(require_permission("finance:read")), db: Session = Depends(get_db)) -> list[AccountsPayable]:
+def get_payables(status_filter: str | None = None, current_user: User = Depends(require_permission("finance:read")), db: Session = Depends(get_db)) -> list[PayableRead]:
     return list_payables(db, current_user.company_id, status_filter)
 
 

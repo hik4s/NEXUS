@@ -74,13 +74,13 @@ Não usar banco de produção nem downgrade de banco com dados reais como teste.
 
 **Interfaces:** manter rotas e schemas SalesOrderCreate/SalesOrderStatusUpdate. Adicionar à assinatura de create_order o argumento keyword-only commit: bool = True; commit=False deixa flush e rollback ao chamador. Não alterar callers existentes sem compatibilidade.
 
-- [ ] Criar testes de duas sessões PostgreSQL confirmando o mesmo pedido; afirmar 1 fulfillment, 1 recebível, estoque debitado uma vez e uma transição bem-sucedida.
-- [ ] Criar test_receivable_failure_rolls_back_stock e test_paid_order_cannot_cancel; afirmar saldo/status/recebível inalterados após falha e após cancelamento proibido.
-- [ ] Criar teste de cancelamentos concorrentes e de replay Idempotency-Key após resposta perdida.
-- [ ] Rodar os testes-alvo para confirmar quais garantias já passam e quais falham.
-- [ ] Bloquear pedido antes da transição e manter efeitos/auditoria na mesma transação; adicionar unicidade por pedido no banco quando ausente e separar auxiliares que fazem commit.
-- [ ] Corrigir atomicidade de criação/idempotência para não haver pedido salvo sem resposta recuperável.
-- [ ] Rodar testes-alvo e regressões sales/inventory/finance/platform no PostgreSQL; revisar e commitar.
+- [x] Criar testes de duas sessões PostgreSQL confirmando o mesmo pedido; afirmar 1 fulfillment, 1 recebível, estoque debitado uma vez e uma transição bem-sucedida.
+- [x] Criar test_receivable_failure_rolls_back_stock e test_paid_order_cannot_cancel; afirmar saldo/status/recebível inalterados após falha e após cancelamento proibido.
+- [x] Criar teste de cancelamentos concorrentes e de replay Idempotency-Key após resposta perdida.
+- [x] Rodar os testes-alvo para confirmar quais garantias já passam e quais falham.
+- [x] Bloquear pedido antes da transição e manter efeitos/auditoria na mesma transação; adicionar unicidade por pedido no banco quando ausente e separar auxiliares que fazem commit.
+- [x] Corrigir atomicidade de criação/idempotência para não haver pedido salvo sem resposta recuperável.
+- [x] Rodar testes-alvo e regressões sales/inventory/finance/platform no PostgreSQL; revisar e commitar.
 
 ## Task 3: Parser CSV determinístico — início M2
 

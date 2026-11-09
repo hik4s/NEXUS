@@ -2,6 +2,7 @@ from typing import Literal
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response, status
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
@@ -10,7 +11,7 @@ from app.models.order import SalesOrder
 from app.models.user import User
 from app.schemas.sales import SalesOrderCreate, SalesOrderRead, SalesOrderStatusUpdate
 from app.services.sales_service import create_order, get_order, list_orders, update_order_status
-from app.platform.service import abort_idempotency, begin_idempotency, complete_idempotency, apply_pagination_headers, paginate_statement
+from app.platform.service import begin_idempotency, complete_idempotency, apply_pagination_headers, paginate_statement
 from app.models.order import SalesOrder
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
@@ -25,18 +26,18 @@ def create_sales_order(
     current_user: User = Depends(require_permission("sales:write")),
     db: Session = Depends(get_db),
 ):
-    record, cached = begin_idempotency(db, current_user, request, request.headers.get("Idempotency-Key"), payload.model_dump(mode="json"))
-    if cached is not None:
-        return cached
     try:
-        order = create_order(db, current_user, payload, request=request)
+        record, cached = begin_idempotency(db, current_user, request, request.headers.get("Idempotency-Key"), payload.model_dump(mode="json"))
+        if cached is not None:
+            return cached
+        order = create_order(db, current_user, payload, request=request, commit=False)
         body = SalesOrderRead.model_validate(order).model_dump(mode="json")
         if record is not None:
             complete_idempotency(db, record, status.HTTP_201_CREATED, body)
-        return order
+        db.commit()
+        return JSONResponse(status_code=status.HTTP_201_CREATED, content=body)
     except Exception:
-        if record is not None:
-            abort_idempotency(db, record)
+        db.rollback()
         raise
 
 

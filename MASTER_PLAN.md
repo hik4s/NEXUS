@@ -27,14 +27,14 @@
 - [x] Arquitetura e MVP registrados.
 - [x] Decisões de reaproveitamento registradas.
 - [x] M0 — Baseline e migrações no PostgreSQL; evidências em [VALIDATION_MVP.md](docs/VALIDATION_MVP.md), branch `codex/m0-postgres` (integração pendente).
-- [ ] M1 — Atomicidade, concorrência e idempotência de vendas/estoque/recebível.
+- [x] M1 — Atomicidade, concorrência e idempotência de vendas/estoque/recebível; evidências em [VALIDATION_M1.md](docs/VALIDATION_M1.md), branch `codex/m1-transactions` (integração pendente).
 - [ ] M2 — Importação e revisão persistida de pedidos.
 - [ ] M3 — Interface TypeScript com jornada integrada.
 - [ ] M4 — CI e demonstração local reproduzível com E2E.
 - [ ] M5 — Publicação Render + Neon e smoke tests reais.
 - [ ] M6 — Release, vídeo, screenshots e validação de portfólio.
 
-**Próxima implementação:** M1 / Task 2 do plano, após integrar M0. Evidências e limites da validação local de M0 em [VALIDATION_MVP.md](docs/VALIDATION_MVP.md).
+**Próxima implementação:** M2 / Tasks 3–4 do plano (parser CSV, revisão persistida e geração de rascunhos). M0 e M1 estão validados localmente; integração e CI no GitHub pendentes. Evidências e limites em [VALIDATION_MVP.md](docs/VALIDATION_MVP.md) e [VALIDATION_M1.md](docs/VALIDATION_M1.md).
 
 ## Plano anterior — contexto e evolução futura
 
