@@ -7,12 +7,14 @@ on:
       - ".github/workflows/backend.yml"
       - "docker-compose.yml"
       - "scripts/db-check.ps1"
+      - "scripts/seed_demo.py"
   pull_request:
     paths:
       - "backend/**"
       - ".github/workflows/backend.yml"
       - "docker-compose.yml"
       - "scripts/db-check.ps1"
+      - "scripts/seed_demo.py"
 
 jobs:
   test:

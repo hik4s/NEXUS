@@ -1,0 +1,14 @@
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import { ApiClient } from '../../lib/api';
+import type { Login } from '../../lib/types';
+import { useAction } from '../../lib/hooks';
+import { ErrorNotice, Icon } from '../../components/ui';
+
+export function LoginPage({ client, onLogin, expired }: { client: ApiClient; onLogin: (login: Login) => void; expired: boolean }) {
+  const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const action = useAction();
+  function submit(event: FormEvent) { event.preventDefault(); void action.run(async () => { const login = await client.post<Login>('/auth/login', { email, password }); onLogin(login); }); }
+  return <main className="login-shell"><div className="login-brand"><img src="/brand/symbol.svg" alt=""/><span>NEXUS</span><small>Operações conectadas</small></div><div className="login-content"><section className="login-card"><span className="eyebrow">Seu workspace, em um só lugar</span><h1>Bom ter você<br/>por aqui.</h1><p>Entre para acompanhar seus pedidos<br className="desktop-only"/> e manter cada etapa conectada.</p>
+    {expired && <div className="notice warning" role="status">Sua sessão terminou. Entre novamente para continuar.</div>}
+    <form onSubmit={submit}><label htmlFor="email">E-mail</label><input id="email" type="email" autoComplete="username" placeholder="seu@email.com" value={email} onChange={event => setEmail(event.target.value)} required/><label htmlFor="password">Senha</label><input id="password" type="password" autoComplete="current-password" placeholder="Sua senha" value={password} onChange={event => setPassword(event.target.value)} required/><button className="button primary" disabled={action.busy}>{action.busy ? 'Entrando…' : 'Entrar no workspace'}<Icon name="arrow" size={18}/></button></form><ErrorNotice error={action.error}/><div className="login-note"><Icon name="audit" size={17}/><p>Use uma conta de demonstração provisionada. Seus dados ficam separados por empresa.</p></div></section><aside className="login-story"><span className="eyebrow">DA PRIMEIRA LINHA À ÚLTIMA ETAPA</span><h2>Menos etapas soltas.<br/>Mais operação<br/><em>conectada.</em></h2><div className="journey-art"><div><Icon name="file"/><span>Pedidos recebidos</span><small>Seu arquivo CSV</small></div><i/><div><Icon name="audit"/><span>Revisão com controle</span><small>Preços e itens conferidos</small></div><i/><div><Icon name="inventory"/><span>Venda, estoque e recebível</span><small>Uma jornada rastreável</small></div></div><div className="story-footer"><span className="live-dot"/>NEXUS · Portfólio de gestão operacional</div></aside></div><footer className="login-footer"><span>Clareza para operar. Controle para decidir.</span><span>© {new Date().getFullYear()} NEXUS</span></footer></main>;
+}

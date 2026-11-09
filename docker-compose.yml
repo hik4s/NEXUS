@@ -1,14 +1,13 @@
 services:
   postgres:
     image: postgres:17-alpine
-    container_name: nexus-postgres
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-nexus}
       POSTGRES_USER: ${POSTGRES_USER:-nexus}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-nexus_dev_password}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -20,10 +19,9 @@ services:
   redis:
     profiles: ["async"]
     image: redis:8-alpine
-    container_name: nexus-redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -35,7 +33,6 @@ services:
   backend:
     build:
       context: ./backend
-    container_name: nexus-backend
     restart: unless-stopped
     env_file:
       - path: .env
@@ -46,7 +43,7 @@ services:
       REDIS_URL: redis://redis:6379/0
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-nexus}:${POSTGRES_PASSWORD:-nexus_dev_password}@postgres:5432/${POSTGRES_DB:-nexus}
     ports:
-      - "8000:8000"
+      - "${API_PORT:-8000}:8000"
     volumes:
       - ./backend:/app
     depends_on:
@@ -57,12 +54,11 @@ services:
   frontend:
     build:
       context: ./frontend
-    container_name: nexus-frontend
     restart: unless-stopped
     environment:
       VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8000/api/v1}
     ports:
-      - "5173:5173"
+      - "${FRONTEND_PORT:-5173}:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules

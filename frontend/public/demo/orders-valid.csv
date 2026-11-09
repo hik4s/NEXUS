@@ -1,0 +1,3 @@
+external_order_id,sku,quantity
+DEMO-001,PROD-A,2
+DEMO-001,PROD-B,1
