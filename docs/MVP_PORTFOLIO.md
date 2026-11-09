@@ -4,7 +4,8 @@ Atualizado em 2026-11-08. Estado: arquitetura e escopo definidos; implementaçã
 
 Checkpoint de execução em 2026-11-09: M0–M2 implementados e validados localmente,
 conforme [VALIDATION_M2.md](VALIDATION_M2.md) e relatórios anteriores. O [perfil público](VALIDATION_PROFILE.md)
-também foi validado localmente. Interface TypeScript, integração no GitHub e deploy ainda pendentes.
+também foi validado localmente. M3/M4 concluídos localmente com interface TypeScript,
+seed, E2E e clone limpo/Compose; [evidências](VALIDATION_UI.md). Integração, CI no GitHub e deploy ainda pendentes.
 
 ## 1. Objetivo
 

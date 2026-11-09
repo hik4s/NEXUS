@@ -4,15 +4,15 @@
 
 O NEXUS explora a integração entre clientes, vendas, estoque, compras e finanças, com permissões por empresa, auditoria e processamento assíncrono. A proposta é transformar operações isoladas em fluxos de negócio rastreáveis.
 
-**Estado atual:** baseline de código `v0.18.0 — B9 Cloud`. O backend contém os domínios e a infraestrutura descritos abaixo; a interface React ainda cobre principalmente autenticação e catálogo. O produto completo e a operação cloud não estão homologados.
+**Estado atual:** evolução do baseline `v0.18.0 — B9 Cloud` para o MVP de portfólio. Backend e interface TypeScript da jornada foram validados localmente até M4, incluindo PostgreSQL, navegador e clone limpo com Docker Compose. Integração/CI no GitHub e operação cloud ainda estão pendentes.
 
 [![Backend](https://github.com/hik4s/NEXUS/actions/workflows/backend.yml/badge.svg)](https://github.com/hik4s/NEXUS/actions/workflows/backend.yml)
 
 ## MVP ativo de portfólio
 
-A jornada do MVP é **importar pedidos CSV → revisar → gerar rascunhos → confirmar venda → atualizar estoque → gerar recebível → cancelar com reversão**. O backend dessa jornada foi validado localmente até M2; integração e CI no GitHub seguem pendentes.
+A jornada do MVP é **importar pedidos CSV → revisar → gerar rascunhos → confirmar venda → atualizar estoque → gerar recebível → cancelar com reversão**. A jornada foi validada com interface e API reais, duas empresas e dados fictícios. Veja [demonstração local](docs/LOCAL_DEMO.md), [evidências M3/M4](docs/VALIDATION_UI.md) e [captura da interface](docs/ui-overview.png).
 
-A arquitetura alvo usa **React/TypeScript + FastAPI + PostgreSQL**, com frontend/API no Render e banco no Neon. A interface atual ainda é React/JavaScript; interface da jornada e deploy estão pendentes. O [perfil público restrito](docs/VALIDATION_PROFILE.md) foi validado localmente, com cadastro fechado por padrão. No perfil gratuito, o recorte não exige worker permanente, Redis ou arquivos locais persistentes.
+A arquitetura usa **React/TypeScript + FastAPI + PostgreSQL**, com publicação alvo no Render e banco no Neon. O deploy está pendente. O [perfil público restrito](docs/VALIDATION_PROFILE.md) tem cadastro fechado por padrão; a sessão da interface fica somente em memória. O recorte não exige worker permanente, Redis ou arquivos locais persistentes.
 
 - [Escopo, arquitetura e critérios de aceite](docs/MVP_PORTFOLIO.md)
 - [O que será mantido, adaptado e adiado](docs/REUSE_AUDIT_2026-11-08.md)
@@ -27,10 +27,10 @@ A arquitetura alvo usa **React/TypeScript + FastAPI + PostgreSQL**, com frontend
 | Persistência | SQLAlchemy 2, Alembic; SQLite local e configuração PostgreSQL |
 | Identidade | JWT, refresh tokens, RBAC e contexto de empresa |
 | Processamento | Workers, scheduler e integração Redis |
-| Interface | React e Vite, em estágio inicial |
+| Interface | React, TypeScript e Vite; jornada MVP conectada |
 | Integrações | HTTPX, Playwright, CSV/XLSX e storage local/S3 |
 | Infraestrutura | Docker Compose e Terraform para AWS |
-| Qualidade | pytest e GitHub Actions |
+| Qualidade | pytest, Vitest, Playwright e GitHub Actions |
 
 O projeto segue um monólito modular. A API reúne rotas e serviços por domínio; a interface e os workers consomem essa base.
 
@@ -58,13 +58,13 @@ A confirmação de uma venda envolve estoque e recebível. O cancelamento de uma
 | Acesso por papéis e isolamento entre empresas | [test_rbac.py](backend/tests/test_rbac.py) |
 | Persistência e migrações | [Alembic](backend/alembic/versions), [test_persistence.py](backend/tests/test_persistence.py) |
 | Processamento assíncrono | [workers](backend/app/workers), [test_async.py](backend/tests/test_async.py) |
-| Interface atualmente disponível | [App.jsx](frontend/src/App.jsx) |
+| Interface e jornada no navegador | [App.tsx](frontend/src/App.tsx), [E2E](frontend/e2e/portfolio-flow.spec.ts) |
 
 Os cálculos de venda usam `Decimal`; consultas de recursos aplicam o contexto da empresa. Os testes incluem recusas por permissão e tentativa de acesso a recursos de outro tenant.
 
 ## Executar localmente
 
-Requer Python 3.11 e Node.js/npm para a interface. Os comandos abaixo usam PowerShell e o backend local com SQLite, sem provisionar AWS.
+Para demonstrar a jornada completa com contas fictícias e PostgreSQL, siga [LOCAL_DEMO.md](docs/LOCAL_DEMO.md). Requer Python 3.12, Node 24.15+ (linha 24) e Docker/Compose. Os comandos abaixo mostram o backend de desenvolvimento com SQLite, sem provisionar cloud.
 
 ### Backend
 
@@ -89,11 +89,11 @@ Em outro terminal, a partir da raiz:
 
 ```powershell
 cd frontend
-npm install
+npm ci
 npm run dev
 ```
 
-Use o endereço informado pelo Vite. A API padrão é `http://localhost:8000/api/v1`; altere `VITE_API_BASE_URL` quando necessário. A demonstração visual atual permite autenticação, consulta da empresa e gerenciamento básico de produtos.
+Use o endereço informado pelo Vite. A API padrão é `http://localhost:8000/api/v1`; altere `VITE_API_BASE_URL` quando necessário. Use as contas provisionadas pelo seed para acessar o perfil portfolio. A interface inclui resumo, importações/revisão, pedidos, catálogo/clientes, estoque, recebíveis e auditoria.
 
 ## Verificar
 
@@ -117,7 +117,7 @@ O [workflow backend](.github/workflows/backend.yml) instala dependências, compi
 | Área | Situação |
 | --- | --- |
 | Backend de negócio | Código e testes presentes; validar jornadas integradas no banco-alvo |
-| Frontend | Autenticação e catálogo iniciais; demais módulos ainda precisam de telas e integração |
+| Frontend MVP | Jornada TypeScript integrada e E2E local aprovado; demais módulos continuam fora do recorte |
 | PostgreSQL e Redis | Configuração presente; homologação operacional pendente no checkpoint |
 | IA | Provedor mock padrão e integração configurável; uso real e qualidade precisam de avaliação |
 | AWS | Terraform presente; não há confirmação de implantação real no checkpoint |
@@ -128,7 +128,7 @@ O [workflow backend](.github/workflows/backend.yml) instala dependências, compi
 1. M0 validado localmente: [baseline PostgreSQL](docs/VALIDATION_MVP.md).
 2. M1 validado localmente: [atomicidade, concorrência e idempotência](docs/VALIDATION_M1.md).
 3. M2 e Task 5 validados localmente: [revisão/importação de pedidos](docs/VALIDATION_M2.md) e [perfil público restrito](docs/VALIDATION_PROFILE.md).
-4. M3–M4: migrar UI para TypeScript e entregar a jornada com testes E2E e CI.
+4. M3–M4 validados localmente: [interface TypeScript, seed, E2E e clone limpo/Compose](docs/VALIDATION_UI.md). CI configurado, execução no GitHub pendente.
 5. M5: configurar Render + Neon e validar persistência, cold start e acesso entre empresas.
 6. M6: publicar release, vídeo, screenshots e relatório de testes.
 

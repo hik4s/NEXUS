@@ -53,5 +53,47 @@ desativadas no perfil portfolio.
 
 ## Verificação final
 
-Resultados de regressão e clone limpo serão consolidados após a execução.
+Fonte implementada: commit `1944575`. Resultados em 2026-11-09:
+
+- Node 24.21.0: npm ci, typecheck, **15 testes Vitest** e build passaram.
+  Build principal: JS 281,67 kB (gzip 83,73 kB), CSS 28,42 kB (gzip 7,27 kB),
+  além dos ativos locais de fonte/marca. Nenhum recurso remoto é necessário à UI.
+- Playwright/Chromium: **2 E2E passaram**, em 32,4 s. A suíte cobre desktop 1440px,
+  mobile 390px, teclado, duas empresas, CSV com erro, saldo antes/depois,
+  recebível único, reversão e sessão descartada ao recarregar.
+- Backend/PostgreSQL: **140 passed**, 2 avisos de depreciação, em 113,63 s.
+- Backend/SQLite: **107 passed, 33 skipped**, 1 aviso, em 44,25 s.
+- Migrações do zero e Alembic check passaram nos dois bancos, sem divergências.
+- Revisão independente: achado de recuperação incerta corrigido com teste que
+  falhou antes; a suíte verde inclui GET pendente, GET malsucedido e recuperação
+  bem-sucedida, sem repetir POST.
+- `git diff --check` e `docker compose config --quiet` passaram.
+
+### Clone limpo e Linux
+
+Clone local independente do commit `1944575`, sem venv/node_modules/dados copiados,
+em `.superpowers/qa/clean-clone`. Compose executado com projeto exclusivo
+`nexus-m4-check`, frontend/API/PostgreSQL e Redis ausente. Portas 5182/8813/55434,
+restritas a loopback no ambiente de QA; PostgreSQL existente na porta 5432 intacto.
+Volumes e containers eram exclusivos e descartáveis deste teste.
+
+- `docker compose up --build -d` construiu as duas imagens e inicializou o banco.
+- Readiness e página frontend responderam 200; seed executou a partir do clone.
+- No container Linux frontend: typecheck, **15 testes**, build passaram via npm ci.
+- Chromium contra a UI do Compose completou importar → revisar → rascunho →
+  confirmar → cancelar; consulta real da API comprovou saldo restaurado,
+  recebível cancelado e 404 para usuário de outra empresa.
+- Contextos Docker excluem dados locais e segredos. Imagens/dados foram criados
+  somente no Docker local; não houve provisionamento externo.
+
+Capturas verificadas: [visão geral](ui-overview.png), [revisão](ui-import-review.png),
+[venda confirmada](ui-order-confirmed.png), [mobile](ui-overview-mobile.png) e
+[acesso mobile](ui-login-mobile.png). As capturas são de dados fictícios da API,
+não mockups. Em execuções normais, E2E salva capturas em test-results; a variável
+NEXUS_CAPTURE_DIR permite selecionar uma pasta de QA explicitamente.
+
+Workflow frontend configurado com PostgreSQL, instalação reproduzível, typecheck,
+Vitest, build, navegador e E2E. A execução no GitHub permanece pendente de push/
+integração: resultado local não é apresentado como execução remota de CI.
+
 Não houve publicação de serviços. Roteiro reproduzível em [LOCAL_DEMO.md](LOCAL_DEMO.md).

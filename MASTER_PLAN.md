@@ -30,12 +30,12 @@
 - [x] M1 — Atomicidade, concorrência e idempotência de vendas/estoque/recebível; evidências em [VALIDATION_M1.md](docs/VALIDATION_M1.md), branch `codex/m1-transactions` (integração pendente).
 - [x] M2 — Importação e revisão persistida de pedidos; evidências em [VALIDATION_M2.md](docs/VALIDATION_M2.md), branch `codex/m2-order-imports` (integração pendente).
 - [x] Task 5 — Perfil público restrito; evidências em [VALIDATION_PROFILE.md](docs/VALIDATION_PROFILE.md), branch `codex/portfolio-profile` (integração pendente).
-- [ ] M3 — Interface TypeScript com jornada integrada.
-- [ ] M4 — CI e demonstração local reproduzível com E2E.
+- [x] M3 — Interface TypeScript com jornada integrada; [evidências](docs/VALIDATION_UI.md), branch `codex/m3-m4-portfolio-ui` (integração pendente).
+- [x] M4 — CI configurado, demonstração local em clone limpo/Compose e E2E validados; [evidências](docs/VALIDATION_UI.md). Execução remota de CI pendente de integração.
 - [ ] M5 — Publicação Render + Neon e smoke tests reais.
 - [ ] M6 — Release, vídeo, screenshots e validação de portfólio.
 
-**Próxima implementação:** Task 6 do plano (interface TypeScript, seed e jornada E2E — M3/M4). M0–M2 e o perfil público estão validados localmente; integração e CI no GitHub pendentes. Evidências e limites nos relatórios [M0](docs/VALIDATION_MVP.md), [M1](docs/VALIDATION_M1.md), [M2](docs/VALIDATION_M2.md) e [perfil público](docs/VALIDATION_PROFILE.md).
+**Próxima implementação:** Task 7 / M5 (publicação Render + Neon, migrações de release, smoke tests e backup/restauração). M0–M4 estão validados localmente; integração e execução de CI no GitHub pendentes. Roteiro em [LOCAL_DEMO.md](docs/LOCAL_DEMO.md), evidências em [VALIDATION_UI.md](docs/VALIDATION_UI.md) e relatórios anteriores.
 
 ## Plano anterior — contexto e evolução futura
 

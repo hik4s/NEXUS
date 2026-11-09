@@ -129,13 +129,13 @@ Limites e constraints protegem concorrência; hash ou checagem prévia isolados 
 
 **Interfaces:** API_BASE_URL de VITE_API_BASE_URL; ApiError {status, code, message}; token de sessão em memória. Tipos gerados do OpenAPI de desenvolvimento ou tipados contra schemas, sem duplicar regras financeiras no cliente. Scripts npm: typecheck, test, build, test:e2e. Seed executa explicitamente no banco de demonstração, com flag de ambiente e comportamento idempotente.
 
-- [ ] Criar teste E2E com duas empresas: importar arquivo com um pedido válido e um inválido, revisar, gerar rascunho, confirmar e cancelar; afirmar estoque e recebível.
-- [ ] Adicionar testes de UI para 401, 403, 409 catalog_changed, serviço indisponível e seleção inválida.
-- [ ] Implementar páginas pt-BR, navegação por teclado e estados loading/empty/error/success; separar cadastro inicial de estoque/catálogo do fluxo de importação.
-- [ ] Impedir double-submit e não repetir mutações automaticamente em timeout; consulta GET recupera estado salvo.
-- [ ] Migrar JS incrementalmente, fixar versões compatíveis após build e versionar lockfile; não manter latest.
-- [ ] Executar npm ci, npm run typecheck, npm test -- --run, npm run build e npm run test:e2e contra API real com PostgreSQL e dados fictícios.
-- [ ] Documentar execução local; conferir clone novo com Docker Compose, capturar evidências e commitar.
+- [x] Criar teste E2E com duas empresas: importar arquivo com um pedido válido e um inválido, revisar, gerar rascunho, confirmar e cancelar; afirmar estoque e recebível.
+- [x] Adicionar testes de UI para 401, 403, 409 catalog_changed, serviço indisponível e seleção inválida.
+- [x] Implementar páginas pt-BR, navegação por teclado e estados loading/empty/error/success; separar cadastro inicial de estoque/catálogo do fluxo de importação.
+- [x] Impedir double-submit e não repetir mutações automaticamente em timeout; consulta GET recupera estado salvo.
+- [x] Migrar JS incrementalmente, fixar versões compatíveis após build e versionar lockfile; não manter latest.
+- [x] Executar npm ci, npm run typecheck, npm test -- --run, npm run build e npm run test:e2e contra API real com PostgreSQL e dados fictícios.
+- [x] Documentar execução local; conferir clone novo com Docker Compose, capturar evidências e commitar.
 
 ## Task 7: Publicação Render + Neon — M5
 
