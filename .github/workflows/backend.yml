@@ -5,14 +5,36 @@ on:
     paths:
       - "backend/**"
       - ".github/workflows/backend.yml"
+      - "docker-compose.yml"
+      - "scripts/db-check.ps1"
   pull_request:
     paths:
       - "backend/**"
       - ".github/workflows/backend.yml"
+      - "docker-compose.yml"
+      - "scripts/db-check.ps1"
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        database: [sqlite, postgres]
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: nexus_test
+          POSTGRES_PASSWORD: nexus_test
+          POSTGRES_DB: nexus_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U nexus_test -d nexus_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: ${{ matrix.database == 'postgres' && 'postgresql+psycopg://nexus_test:nexus_test@localhost:5432/nexus_test' || 'sqlite:///./data/ci.db' }}
+      REDIS_ENABLED: "false"
     defaults:
       run:
         working-directory: backend
@@ -28,6 +50,8 @@ jobs:
       - name: Compile
         run: python -m compileall -q app
       - name: Alembic check
-        run: python -m alembic check
+        run: |
+          python -m alembic upgrade head
+          python -m alembic check
       - name: Tests
         run: python -m pytest -q

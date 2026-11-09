@@ -26,7 +26,7 @@
 - [x] Inspeção estática do baseline main 9e64214531f491ec0dabbd20e13f694afccd901c.
 - [x] Arquitetura e MVP registrados.
 - [x] Decisões de reaproveitamento registradas.
-- [ ] M0 — Baseline e migrações no PostgreSQL, com evidências de execução.
+- [x] M0 — Baseline e migrações no PostgreSQL; evidências em [VALIDATION_MVP.md](docs/VALIDATION_MVP.md), branch `codex/m0-postgres` (integração pendente).
 - [ ] M1 — Atomicidade, concorrência e idempotência de vendas/estoque/recebível.
 - [ ] M2 — Importação e revisão persistida de pedidos.
 - [ ] M3 — Interface TypeScript com jornada integrada.
@@ -34,7 +34,7 @@
 - [ ] M5 — Publicação Render + Neon e smoke tests reais.
 - [ ] M6 — Release, vídeo, screenshots e validação de portfólio.
 
-**Próxima implementação:** M0 / Task 1 do plano. Esta atualização altera documentação, não executa serviços, testes de aplicação nem provisiona recursos.
+**Próxima implementação:** M1 / Task 2 do plano, após integrar M0. Evidências e limites da validação local de M0 em [VALIDATION_MVP.md](docs/VALIDATION_MVP.md).
 
 ## Plano anterior — contexto e evolução futura
 

@@ -60,11 +60,11 @@ O nome da nova revisão Alembic será gerado pela ferramenta após conferir a he
 
 **Interfaces:** usar DATABASE_URL com postgresql+psycopg, engine/SessionLocal existentes e alembic upgrade head. Entregar comando de teste com banco descartável e fixtures sem dados pessoais.
 
-- [ ] Criar teste test_postgres_migrations_bootstrap que consulta alembic_version e confirma tabelas companies, sales_orders, stock_balances e accounts_receivable após upgrade de banco vazio.
-- [ ] Executar em PostgreSQL novo; registrar falha ou ausência da configuração, sem substituí-la por SQLite.
-- [ ] Corrigir variáveis de usuário/nome do Compose, permitir perfil sem Redis e incluir PostgreSQL no CI.
-- [ ] Executar alembic upgrade head, alembic check e python -m pytest -q com DATABASE_URL de teste. Registrar comando, versões, commit e resultado em VALIDATION_MVP.md.
-- [ ] Conferir que reiniciar a API não recria/apaga o banco; revisar diff e commitar.
+- [x] Criar teste test_postgres_migrations_bootstrap que consulta alembic_version e confirma tabelas companies, sales_orders, stock_balances e accounts_receivable após upgrade de banco vazio.
+- [x] Executar em PostgreSQL novo; registrar falha ou ausência da configuração, sem substituí-la por SQLite.
+- [x] Corrigir variáveis de usuário/nome do Compose, permitir perfil sem Redis e incluir PostgreSQL no CI.
+- [x] Executar alembic upgrade head, alembic check e python -m pytest -q com DATABASE_URL de teste. Registrar comando, versões, commit e resultado em VALIDATION_MVP.md.
+- [x] Conferir que reiniciar a API não recria/apaga o banco; revisar diff e commitar.
 
 Não usar banco de produção nem downgrade de banco com dados reais como teste.
 
