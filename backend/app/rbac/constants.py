@@ -78,6 +78,9 @@ SYSTEM_ROLE_DEFINITIONS = {
         "name": "Manager",
         "description": "Operational management access.",
         "permissions": {
+            "sales:read",
+            "sales:write",
+            "sales:confirm",
             "company:read",
             "users:read",
             "users:manage",

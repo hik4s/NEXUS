@@ -88,11 +88,11 @@ Não usar banco de produção nem downgrade de banco com dados reais como teste.
 
 **Interfaces:** parse_order_csv(content: bytes) -> ParsedOrderFile. Schema ParsedOrderFile contém orders: list[ParsedOrder], unassigned_errors: list[ImportIssue]. ParsedOrder contém external_order_id: str, items: list[ParsedOrderItem], source_lines: list[int], errors: list[ImportIssue]. ParsedOrderItem contém sku: str e quantity: int. ImportIssue contém row: int, field: str | None, code: str e message: str. Falhas estruturais lançam OrderImportFormatError(code: str, message: str), sem banco.
 
-- [ ] Escrever testes BOM, agrupamento, SKU repetido no pedido, UTF-8 inválido, cabeçalhos duplicados/ausentes/extras e linha com colunas a mais.
-- [ ] Testar limites exatos: 1 MiB aceito/1 byte extra recusado; 500/501 linhas; 100/101 pedidos; quantidade 0, decimal, negativa e acima do máximo.
-- [ ] Testar linha sem external_order_id como erro não associado; uma linha inválida invalida o pedido inteiro.
-- [ ] Rodar python -m pytest -q tests/test_order_import_parser.py, confirmar falha inicial e implementar parser sem materializar entrada ilimitada.
-- [ ] Rodar novamente até passar; conferir que fixtures são fictícias e commitar.
+- [x] Escrever testes BOM, agrupamento, SKU repetido no pedido, UTF-8 inválido, cabeçalhos duplicados/ausentes/extras e linha com colunas a mais.
+- [x] Testar limites exatos: 1 MiB aceito/1 byte extra recusado; 500/501 linhas; 100/101 pedidos; quantidade 0, decimal, negativa e acima do máximo.
+- [x] Testar linha sem external_order_id como erro não associado; uma linha inválida invalida o pedido inteiro.
+- [x] Rodar python -m pytest -q tests/test_order_import_parser.py, confirmar falha inicial e implementar parser sem materializar entrada ilimitada.
+- [x] Rodar novamente até passar; conferir que fixtures são fictícias e commitar.
 
 ## Task 4: Revisão persistida e geração de rascunhos — M2
 
@@ -100,13 +100,13 @@ Não usar banco de produção nem downgrade de banco com dados reais como teste.
 
 **Interfaces:** create_review(db: Session, actor: User, filename: str, content: bytes) -> tuple[OrderImportBatch, bool]; get_review(db: Session, actor: User, batch_id: UUID) -> OrderImportBatch; revalidate_review(db: Session, actor: User, batch_id: UUID) -> OrderImportBatch; commit_review(db: Session, actor: User, batch_id: UUID, entry_ids: list[UUID]) -> CommitReviewResult. Resultado tem batch_id e orders com entry_id, order_id, reused. Usar create_order(..., commit=False) da tarefa 2. Rotas e estados são os da spec.
 
-- [ ] Criar testes de revisão sem efeito em estoque, SKU desconhecido, arquivo repetido e separação entre empresas.
-- [ ] Criar testes para 20/21 batches diários, 100/101 retidos, seleção inválida, CSV com pedido repetido e dois batches concorrentes com a mesma referência.
-- [ ] Testar timeout/repetição após commit: mesmos order_ids; payload diferente sob mesma identidade externa: 409; nenhum pedido parcial na falha.
-- [ ] Testar preço alterado → 409 catalog_changed → revalidate → geração com novo valor explícito; snapshot anterior permanece rastreável em auditoria.
-- [ ] Implementar tabelas/constraints e serviço transacional, incluindo lock no batch e contagem/limites sob lock da empresa.
-- [ ] Exportar erros CSV com neutralização de fórmulas e teste de autorização.
-- [ ] Rodar python -m pytest -q tests/test_order_import_parser.py tests/test_order_import_api.py no PostgreSQL e a cadeia Alembic do zero; revisar e commitar.
+- [x] Criar testes de revisão sem efeito em estoque, SKU desconhecido, arquivo repetido e separação entre empresas.
+- [x] Criar testes para 20/21 batches diários, 100/101 retidos, seleção inválida, CSV com pedido repetido e dois batches concorrentes com a mesma referência.
+- [x] Testar timeout/repetição após commit: mesmos order_ids; payload diferente sob mesma identidade externa: 409; nenhum pedido parcial na falha.
+- [x] Testar preço alterado → 409 catalog_changed → revalidate → geração com novo valor explícito; snapshot anterior permanece rastreável em auditoria.
+- [x] Implementar tabelas/constraints e serviço transacional, incluindo lock no batch e contagem/limites sob lock da empresa.
+- [x] Exportar erros CSV com neutralização de fórmulas e teste de autorização.
+- [x] Rodar python -m pytest -q tests/test_order_import_parser.py tests/test_order_import_api.py no PostgreSQL e a cadeia Alembic do zero; revisar e commitar.
 
 Limites e constraints protegem concorrência; hash ou checagem prévia isolados não bastam.
 

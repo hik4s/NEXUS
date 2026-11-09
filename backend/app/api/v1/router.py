@@ -1,8 +1,10 @@
 from fastapi import APIRouter
+from app.api.v1.routes import order_imports
 
 from app.api.v1.routes import async_processing, platform, audit, auth, companies, crm, finance, health, inventory, logistics, procurement, products, sales, users, workflow, integrations, intelligence
 
 api_router = APIRouter()
+api_router.include_router(order_imports.router, tags=['order-imports'])
 api_router.include_router(auth.router, tags=["auth"])
 api_router.include_router(health.router, tags=["health"])
 api_router.include_router(companies.router, tags=["companies"])

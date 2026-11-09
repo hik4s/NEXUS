@@ -9,6 +9,8 @@ from sqlalchemy.orm import Session
 from app.api.v1.router import api_router
 from app.core.config import settings
 from app.core.middleware import SecurityAndObservabilityMiddleware
+from app.core.upload_limits import BoundedUploadMiddleware
+from app.services.order_import_parser import MAX_BYTES
 from app.core.observability import configure_logging
 from app.core.security_config import validate_security_configuration
 from app.db.session import engine
@@ -45,6 +47,8 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["Authorization", "Content-Type", "X-API-Key", "Idempotency-Key", "X-Request-ID"],
 )
+# Permit bounded multipart overhead in addition to the strict 1 MiB file limit.
+app.add_middleware(BoundedUploadMiddleware, path=f'{settings.API_V1_PREFIX}/order-imports', max_body_bytes=MAX_BYTES + 64 * 1024)
 app.add_middleware(SecurityAndObservabilityMiddleware)
 
 app.include_router(api_router, prefix=settings.API_V1_PREFIX)

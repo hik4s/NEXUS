@@ -40,13 +40,16 @@ class ImportEntryRead(BaseModel):
     sales_order_id: UUID | None
 
 
-class ImportBatchRead(BaseModel):
+class ImportBatchSummary(BaseModel):
     model_config = ConfigDict(from_attributes=True)
     id: UUID
     filename: str
     sha256: str
     status: str
     created_at: datetime
+
+
+class ImportBatchRead(ImportBatchSummary):
     unassigned_errors: list[ImportIssue]
     entries: list[ImportEntryRead]
 

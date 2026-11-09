@@ -2,6 +2,10 @@
 
 Atualizado em 2026-11-08. Estado: arquitetura e escopo definidos; implementação e homologação das próximas etapas pendentes.
 
+Checkpoint de execução em 2026-11-09: M0–M2 implementados e validados localmente,
+conforme [VALIDATION_M2.md](VALIDATION_M2.md) e relatórios anteriores. Perfil público,
+interface TypeScript, integração no GitHub e deploy ainda pendentes.
+
 ## 1. Objetivo
 
 Entregar uma aplicação web demonstrável para importar pedidos, revisar inconsistências e executar o fluxo venda → estoque → recebível → cancelamento, preservando isolamento entre empresas e rastreabilidade. O portfólio será orientado a Python backend, full stack Python/React e frontend React, com evidências verificáveis.
@@ -115,7 +119,7 @@ Novas tabelas dedicadas OrderImportBatch, OrderImportEntry e OrderImportSource, 
 
 ### API proposta
 
-Prefixo /api/v1. Novas rotas, ainda não existentes:
+Prefixo /api/v1. Rotas implementadas em M2 e validadas por API:
 
 | Método/rota | Resultado |
 | --- | --- |

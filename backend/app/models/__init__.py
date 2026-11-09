@@ -17,8 +17,10 @@ from app.models.integrations import FileAsset, ImportRun, IntegrationConnection,
 from app.models.intelligence import ActionProposal, IntelligenceConversation, IntelligenceMessage, IntelligenceToolCall
 from app.models.rbac import Permission, Role, role_permissions, user_roles
 from app.models.user import User
+from app.models.order_imports import OrderImportBatch, OrderImportEntry, OrderImportSource
 
 __all__ = [
+    "OrderImportBatch", "OrderImportEntry", "OrderImportSource",
     "AuditLog",
     "BackgroundJob",
     "JobSchedule",
