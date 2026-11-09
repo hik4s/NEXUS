@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
+from uuid import UUID
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -13,13 +14,14 @@ def utcnow() -> datetime:
     return datetime.now(timezone.utc)
 
 
-def run_scheduler_tick(db: Session, now: datetime | None = None) -> list[str]:
+def run_scheduler_tick(db: Session, now: datetime | None = None, *, company_id: UUID | None = None) -> list[str]:
     now = now or utcnow()
+    stmt = select(JobSchedule).where(JobSchedule.active.is_(True), JobSchedule.next_run_at <= now)
+    if company_id is not None:
+        stmt = stmt.where(JobSchedule.company_id == company_id)
     schedules = list(
         db.scalars(
-            select(JobSchedule)
-            .where(JobSchedule.active.is_(True), JobSchedule.next_run_at <= now)
-            .order_by(JobSchedule.next_run_at.asc())
+            stmt.order_by(JobSchedule.next_run_at.asc())
         ).all()
     )
     job_ids: list[str] = []

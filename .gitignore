@@ -19,6 +19,7 @@ venv/
 *.sqlite
 *.sqlite3
 data/storage/
+backend/data/storage/
 postgres_data/
 redis_data/
 *.log
