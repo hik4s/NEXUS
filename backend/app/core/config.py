@@ -1,8 +1,14 @@
+from typing import Literal
+
+from pydantic import Field, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
     APP_ENV: str = "development"
+    APP_PROFILE: Literal['full', 'portfolio'] = 'full'
+    PUBLIC_REGISTRATION_ENABLED: bool = True
+    DB_TIMEOUT_SECONDS: int = Field(default=3, ge=1, le=30)
     APP_NAME: str = "NEXUS API"
     APP_VERSION: str = "0.18.0"
     API_V1_PREFIX: str = "/api/v1"
@@ -43,6 +49,12 @@ class Settings(BaseSettings):
     AI_FALLBACK_TO_MOCK: bool = True
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+
+    @model_validator(mode='after')
+    def registration_default(self):
+        if 'PUBLIC_REGISTRATION_ENABLED' not in self.model_fields_set:
+            self.PUBLIC_REGISTRATION_ENABLED = self.APP_PROFILE == 'full'
+        return self
 
     def cors_origins(self) -> list[str]:
         return [item.strip() for item in self.CORS_ORIGINS.split(",") if item.strip()]

@@ -116,12 +116,12 @@ Limites e constraints protegem concorrência; hash ou checagem prévia isolados 
 
 **Interfaces:** APP_PROFILE = full | portfolio, padrão full para compatibilidade; PUBLIC_REGISTRATION_ENABLED = bool. No perfil portfolio permitir auth com registro condicionado, companies/users necessários, products, customers básicos, sales, inventory, finance somente leituras, audit e order-imports. Desativar mutações financeiras e rotas legadas de integrações, jobs, IA, automação, logística e compras nesse perfil.
 
-- [ ] Criar testes: perfil portfolio inicializa com REDIS_ENABLED=false, não aceita job sem executor, não oferece upload persistente local e não expõe rotas fora do recorte.
-- [ ] Testar manager com novas permissões sales e sem acesso a papéis admin/finance:pay; employee recebe 403 nas mutações do fluxo.
-- [ ] Testar token expirado/inativo e 404 para UUID de outra empresa; autorização permanece no servidor.
-- [ ] Implementar seleção de routers/capacidades e configurar CORS para expor os cabeçalhos de paginação usados pela UI.
-- [ ] Manter segredo de produção obrigatório, readiness com timeout e resposta de erro sem segredos.
-- [ ] Rodar python -m pytest -q tests/test_portfolio_profile.py tests/test_rbac.py tests/test_auth.py; revisar e commitar.
+- [x] Criar testes: perfil portfolio inicializa com REDIS_ENABLED=false, não aceita job sem executor, não oferece upload persistente local e não expõe rotas fora do recorte.
+- [x] Testar manager com novas permissões sales e sem acesso a papéis admin/finance:pay; employee recebe 403 nas mutações do fluxo.
+- [x] Testar token expirado/inativo e 404 para UUID de outra empresa; autorização permanece no servidor.
+- [x] Implementar seleção de routers/capacidades e configurar CORS para expor os cabeçalhos de paginação usados pela UI.
+- [x] Manter segredo de produção obrigatório, readiness com timeout e resposta de erro sem segredos.
+- [x] Rodar python -m pytest -q tests/test_portfolio_profile.py tests/test_rbac.py tests/test_auth.py; revisar e commitar.
 
 ## Task 6: Interface TypeScript e demonstração integrada — M3/M4
 

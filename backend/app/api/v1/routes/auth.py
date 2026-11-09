@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status
+from jwt import InvalidTokenError
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
+from app.core.config import settings
 from app.identity.dependencies import get_current_user
 from app.identity.security import create_access_token, create_refresh_token, decode_refresh_token
 from app.models.user import User
@@ -18,6 +20,8 @@ def register(
     request: Request,
     db: Session = Depends(get_db),
 ) -> TokenResponse:
+    if not settings.PUBLIC_REGISTRATION_ENABLED:
+        raise HTTPException(status_code=403, detail={'code': 'registration_disabled', 'message': 'Cadastro público indisponível.'})
     try:
         user, access_token, refresh_token = register_owner(db, payload, request=request)
     except ValueError as exc:
@@ -53,7 +57,7 @@ def refresh(
 ) -> TokenResponse:
     try:
         user_id = decode_refresh_token(payload.refresh_token)
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, InvalidTokenError):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired refresh token")
 
     user = db.get(User, user_id)

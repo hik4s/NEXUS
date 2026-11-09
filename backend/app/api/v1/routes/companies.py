@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
+from app.core.config import settings
 from app.identity.dependencies import require_permission
 from app.models.company import Company
 from app.models.user import User
@@ -30,7 +31,7 @@ def get_company(
     db: Session = Depends(get_db),
 ) -> Company:
     if company_id != current_user.company_id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+        raise HTTPException(status_code=404 if settings.APP_PROFILE == 'portfolio' else 403, detail="Company not found")
     company = db.get(Company, company_id)
     if company is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Company not found")

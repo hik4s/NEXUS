@@ -12,7 +12,7 @@ O NEXUS explora a integração entre clientes, vendas, estoque, compras e finan�
 
 A jornada do MVP é **importar pedidos CSV → revisar → gerar rascunhos → confirmar venda → atualizar estoque → gerar recebível → cancelar com reversão**. O backend dessa jornada foi validado localmente até M2; integração e CI no GitHub seguem pendentes.
 
-A arquitetura alvo usa **React/TypeScript + FastAPI + PostgreSQL**, com frontend/API no Render e banco no Neon. A interface atual ainda é React/JavaScript; perfil público restrito, interface da jornada e deploy estão pendentes. No perfil gratuito, o recorte não exige worker permanente, Redis ou arquivos locais persistentes.
+A arquitetura alvo usa **React/TypeScript + FastAPI + PostgreSQL**, com frontend/API no Render e banco no Neon. A interface atual ainda é React/JavaScript; interface da jornada e deploy estão pendentes. O [perfil público restrito](docs/VALIDATION_PROFILE.md) foi validado localmente, com cadastro fechado por padrão. No perfil gratuito, o recorte não exige worker permanente, Redis ou arquivos locais persistentes.
 
 - [Escopo, arquitetura e critérios de aceite](docs/MVP_PORTFOLIO.md)
 - [O que será mantido, adaptado e adiado](docs/REUSE_AUDIT_2026-11-08.md)
@@ -127,7 +127,7 @@ O [workflow backend](.github/workflows/backend.yml) instala dependências, compi
 
 1. M0 validado localmente: [baseline PostgreSQL](docs/VALIDATION_MVP.md).
 2. M1 validado localmente: [atomicidade, concorrência e idempotência](docs/VALIDATION_M1.md).
-3. M2 validado localmente: [revisão/importação de pedidos](docs/VALIDATION_M2.md), separada do importador de clientes existente. Próximo passo: perfil público restrito (Task 5).
+3. M2 e Task 5 validados localmente: [revisão/importação de pedidos](docs/VALIDATION_M2.md) e [perfil público restrito](docs/VALIDATION_PROFILE.md).
 4. M3–M4: migrar UI para TypeScript e entregar a jornada com testes E2E e CI.
 5. M5: configurar Render + Neon e validar persistência, cold start e acesso entre empresas.
 6. M6: publicar release, vídeo, screenshots e relatório de testes.

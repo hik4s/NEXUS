@@ -18,7 +18,7 @@ def _validate_role_keys(role_keys: list[str]) -> None:
 
 def create_company_user(db: Session, actor: User, payload: UserCreateRequest, request=None) -> User:
     _validate_role_keys(payload.role_keys)
-    if "employee" not in payload.role_keys and not user_has_permission(db, actor.id, "roles:manage"):
+    if set(payload.role_keys) - {"employee"} and not user_has_permission(db, actor.id, "roles:manage"):
         raise PermissionError("Only privileged administrators can assign elevated roles")
     email = str(payload.email).lower()
     if db.scalar(select(User).where(User.email == email)):
@@ -75,7 +75,7 @@ def update_company_user(
 
     if payload.role_keys is not None:
         _validate_role_keys(payload.role_keys)
-        if "employee" not in payload.role_keys and not user_has_permission(db, actor.id, "roles:manage"):
+        if set(payload.role_keys) - {"employee"} and not user_has_permission(db, actor.id, "roles:manage"):
             raise PermissionError("Only privileged administrators can assign elevated roles")
         roles = list(db.scalars(select(Role).where(Role.key.in_(payload.role_keys))).all())
         if len(roles) != len(set(payload.role_keys)):

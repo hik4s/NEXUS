@@ -1,10 +1,8 @@
 from fastapi import APIRouter, Response
-from sqlalchemy import text
-from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.observability import metrics
-from app.db.session import engine
+from app.core.readiness import database_readiness
 
 router = APIRouter(prefix="/health")
 
@@ -15,9 +13,10 @@ def health_check() -> dict[str, str]:
 
 
 @router.get("/ready", summary="Readiness check")
-def readiness_check() -> dict[str, str]:
-    with engine.connect() as connection:
-        connection.execute(text("SELECT 1"))
+async def readiness_check() -> dict[str, str]:
+    result = await database_readiness()
+    if settings.APP_PROFILE == 'portfolio':
+        return result
     redis_status = "disabled"
     if settings.REDIS_ENABLED:
         try:
@@ -27,7 +26,7 @@ def readiness_check() -> dict[str, str]:
             redis_status = "ok"
         except Exception:
             redis_status = "unavailable"
-    return {"status": "ready", "database": "ok", "redis": redis_status}
+    return {**result, "redis": redis_status}
 
 
 @router.get("/metrics", include_in_schema=False)

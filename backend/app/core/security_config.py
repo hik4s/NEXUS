@@ -10,7 +10,12 @@ def validate_security_configuration() -> None:
             raise RuntimeError("SECRET_KEY must be a unique secret of at least 32 characters in production")
         if settings.ENABLE_DOCS_IN_PRODUCTION:
             raise RuntimeError("ENABLE_DOCS_IN_PRODUCTION must remain false unless explicitly reviewed")
-        if settings.STORAGE_BACKEND == "s3" and not settings.S3_BUCKET:
+        if settings.APP_PROFILE == 'portfolio':
+            if settings.PUBLIC_REGISTRATION_ENABLED:
+                raise RuntimeError('PUBLIC_REGISTRATION_ENABLED must be false for the public portfolio deployment')
+            if not settings.DATABASE_URL.startswith('postgresql+psycopg://'):
+                raise RuntimeError('The production portfolio requires PostgreSQL with psycopg')
+        if settings.APP_PROFILE == 'full' and settings.STORAGE_BACKEND == "s3" and not settings.S3_BUCKET:
             raise RuntimeError("S3_BUCKET is required in production when STORAGE_BACKEND=s3")
 
 

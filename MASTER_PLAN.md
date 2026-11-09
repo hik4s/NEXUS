@@ -29,12 +29,13 @@
 - [x] M0 — Baseline e migrações no PostgreSQL; evidências em [VALIDATION_MVP.md](docs/VALIDATION_MVP.md), branch `codex/m0-postgres` (integração pendente).
 - [x] M1 — Atomicidade, concorrência e idempotência de vendas/estoque/recebível; evidências em [VALIDATION_M1.md](docs/VALIDATION_M1.md), branch `codex/m1-transactions` (integração pendente).
 - [x] M2 — Importação e revisão persistida de pedidos; evidências em [VALIDATION_M2.md](docs/VALIDATION_M2.md), branch `codex/m2-order-imports` (integração pendente).
+- [x] Task 5 — Perfil público restrito; evidências em [VALIDATION_PROFILE.md](docs/VALIDATION_PROFILE.md), branch `codex/portfolio-profile` (integração pendente).
 - [ ] M3 — Interface TypeScript com jornada integrada.
 - [ ] M4 — CI e demonstração local reproduzível com E2E.
 - [ ] M5 — Publicação Render + Neon e smoke tests reais.
 - [ ] M6 — Release, vídeo, screenshots e validação de portfólio.
 
-**Próxima implementação:** Task 5 do plano (perfil público sem dependências ocultas), pré-requisito da interface M3 e publicação M5. M0–M2 estão validados localmente; integração e CI no GitHub pendentes. Evidências e limites em [VALIDATION_MVP.md](docs/VALIDATION_MVP.md), [VALIDATION_M1.md](docs/VALIDATION_M1.md) e [VALIDATION_M2.md](docs/VALIDATION_M2.md).
+**Próxima implementação:** Task 6 do plano (interface TypeScript, seed e jornada E2E — M3/M4). M0–M2 e o perfil público estão validados localmente; integração e CI no GitHub pendentes. Evidências e limites nos relatórios [M0](docs/VALIDATION_MVP.md), [M1](docs/VALIDATION_M1.md), [M2](docs/VALIDATION_M2.md) e [perfil público](docs/VALIDATION_PROFILE.md).
 
 ## Plano anterior — contexto e evolução futura
 

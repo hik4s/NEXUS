@@ -5,6 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
+from app.core.config import settings
 from app.identity.dependencies import require_permission
 from app.models.company import Company
 from app.models.product import Product
@@ -18,7 +19,7 @@ router = APIRouter(prefix="/companies/{company_id}/products")
 
 def ensure_company_access(company_id: UUID, current_user: User) -> None:
     if company_id != current_user.company_id:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied")
+        raise HTTPException(status_code=404 if settings.APP_PROFILE == 'portfolio' else 403, detail="Company not found")
 
 
 @router.post("", response_model=ProductRead, status_code=status.HTTP_201_CREATED)
