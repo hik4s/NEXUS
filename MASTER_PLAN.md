@@ -5,7 +5,7 @@
 > A arquitetura e o recorte atuais estão em [MVP_PORTFOLIO.md](docs/MVP_PORTFOLIO.md). Esta atualização prevalece sobre prioridades e infraestrutura de fases anteriores abaixo. A visão ampla de produto permanece como evolução.
 >
 > **Stack alvo:** React/TypeScript + FastAPI + PostgreSQL/SQLAlchemy/Alembic.
-> **Publicação alvo:** frontend/API no Render e PostgreSQL no Neon, dentro das cotas gratuitas. Configuração e deploy ainda pendentes.
+> **Publicação:** frontend/API no Render e PostgreSQL no Neon, dentro das cotas gratuitas. M5 publicado e validado em 2026-11-09; [evidências](docs/VALIDATION_M5.md).
 > **Jornada:** importar CSV de pedidos → revisar inconsistências → gerar rascunhos → confirmar venda → baixar estoque → gerar recebível → cancelar com reversão consistente.
 >
 > **Estratégia:** aproveitar autenticação, RBAC, catálogo, vendas, estoque, recebíveis, auditoria e testes. Adaptar frontend, transações e CI. Criar importação de pedidos; o importador existente é de clientes.
@@ -26,16 +26,16 @@
 - [x] Inspeção estática do baseline main 9e64214531f491ec0dabbd20e13f694afccd901c.
 - [x] Arquitetura e MVP registrados.
 - [x] Decisões de reaproveitamento registradas.
-- [x] M0 — Baseline e migrações no PostgreSQL; evidências em [VALIDATION_MVP.md](docs/VALIDATION_MVP.md), branch `codex/m0-postgres` (integração pendente).
-- [x] M1 — Atomicidade, concorrência e idempotência de vendas/estoque/recebível; evidências em [VALIDATION_M1.md](docs/VALIDATION_M1.md), branch `codex/m1-transactions` (integração pendente).
-- [x] M2 — Importação e revisão persistida de pedidos; evidências em [VALIDATION_M2.md](docs/VALIDATION_M2.md), branch `codex/m2-order-imports` (integração pendente).
-- [x] Task 5 — Perfil público restrito; evidências em [VALIDATION_PROFILE.md](docs/VALIDATION_PROFILE.md), branch `codex/portfolio-profile` (integração pendente).
-- [x] M3 — Interface TypeScript com jornada integrada; [evidências](docs/VALIDATION_UI.md), branch `codex/m3-m4-portfolio-ui` (integração pendente).
-- [x] M4 — CI configurado, demonstração local em clone limpo/Compose e E2E validados; [evidências](docs/VALIDATION_UI.md). Execução remota de CI pendente de integração.
-- [ ] M5 — Publicação Render + Neon e smoke tests reais.
+- [x] M0 — Baseline e migrações no PostgreSQL, integrado à main; [evidências](docs/VALIDATION_MVP.md).
+- [x] M1 — Atomicidade, concorrência e idempotência de vendas/estoque/recebível; [evidências](docs/VALIDATION_M1.md).
+- [x] M2 — Importação e revisão persistida de pedidos; [evidências](docs/VALIDATION_M2.md).
+- [x] Task 5 — Perfil público restrito; [evidências](docs/VALIDATION_PROFILE.md).
+- [x] M3 — Interface TypeScript com jornada integrada; [evidências](docs/VALIDATION_UI.md).
+- [x] M4 — Demonstração em clone limpo/Compose e E2E validados; CI remoto backend/frontend aprovado; [evidências](docs/VALIDATION_M5.md).
+- [x] M5 — Publicação Render + Neon, smoke tests públicos, persistência após redeploy e backup/restauração; [evidências](docs/VALIDATION_M5.md).
 - [ ] M6 — Release, vídeo, screenshots e validação de portfólio.
 
-**Próxima implementação:** Task 7 / M5 (publicação Render + Neon, migrações de release, smoke tests e backup/restauração). M0–M4 estão validados localmente; integração e execução de CI no GitHub pendentes. Roteiro em [LOCAL_DEMO.md](docs/LOCAL_DEMO.md), evidências em [VALIDATION_UI.md](docs/VALIDATION_UI.md) e relatórios anteriores.
+**Próxima etapa:** Task 8 / M6 — release de portfólio, vídeo e apresentação das evidências. M0–M5 estão integrados à main. CI backend/frontend foi executado com sucesso no GitHub; execução, commits e deploys estão registrados em [VALIDATION_M5.md](docs/VALIDATION_M5.md). Roteiro local em [LOCAL_DEMO.md](docs/LOCAL_DEMO.md).
 
 ## Plano anterior — contexto e evolução futura
 

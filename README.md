@@ -4,7 +4,7 @@
 
 O NEXUS explora a integração entre clientes, vendas, estoque, compras e finanças, com permissões por empresa, auditoria e processamento assíncrono. A proposta é transformar operações isoladas em fluxos de negócio rastreáveis.
 
-**Estado atual:** evolução do baseline `v0.18.0 — B9 Cloud` para o MVP de portfólio. Backend e interface TypeScript da jornada foram validados localmente até M4, incluindo PostgreSQL, navegador e clone limpo com Docker Compose. Integração/CI no GitHub e operação cloud ainda estão pendentes.
+**Estado atual:** MVP de portfólio publicado no Render com PostgreSQL no Neon. M0–M5 validados: jornada pública, isolamento entre empresas, persistência após redeploy e backup/restauração. Release editorial, vídeo e apresentação final de portfólio pertencem a M6.
 
 [![Backend](https://github.com/hik4s/NEXUS/actions/workflows/backend.yml/badge.svg)](https://github.com/hik4s/NEXUS/actions/workflows/backend.yml)
 
@@ -12,7 +12,17 @@ O NEXUS explora a integração entre clientes, vendas, estoque, compras e finan�
 
 A jornada do MVP é **importar pedidos CSV → revisar → gerar rascunhos → confirmar venda → atualizar estoque → gerar recebível → cancelar com reversão**. A jornada foi validada com interface e API reais, duas empresas e dados fictícios. Veja [demonstração local](docs/LOCAL_DEMO.md), [evidências M3/M4](docs/VALIDATION_UI.md) e [captura da interface](docs/ui-overview.png).
 
-A arquitetura usa **React/TypeScript + FastAPI + PostgreSQL**, com publicação alvo no Render e banco no Neon. O deploy está pendente. O [perfil público restrito](docs/VALIDATION_PROFILE.md) tem cadastro fechado por padrão; a sessão da interface fica somente em memória. O recorte não exige worker permanente, Redis ou arquivos locais persistentes.
+A arquitetura usa **React/TypeScript + FastAPI + PostgreSQL**, com publicação no Render e banco no Neon. O [perfil público restrito](docs/VALIDATION_PROFILE.md) tem cadastro fechado; a sessão da interface fica somente em memória. O recorte não exige worker permanente, Redis ou arquivos locais persistentes.
+
+- [Abrir a demonstração](https://nexus-portfolio-ui.onrender.com)
+- [Readiness da API](https://nexus-up1i.onrender.com/readiness)
+- [Deploy e operação](docs/DEPLOY_RENDER_NEON.md) · [evidências M5](docs/VALIDATION_M5.md)
+
+O responsável pelo ambiente fornece acesso à conta gerente de demonstração;
+senhas não são publicadas neste repositório. Use somente dados fictícios.
+O plano gratuito pode hibernar: aguarde a inicialização e consulte o estado salvo
+antes de decidir repetir uma operação. Deploys são manuais para executar a
+migração controlada antes de publicar código novo.
 
 - [Escopo, arquitetura e critérios de aceite](docs/MVP_PORTFOLIO.md)
 - [O que será mantido, adaptado e adiado](docs/REUSE_AUDIT_2026-11-08.md)

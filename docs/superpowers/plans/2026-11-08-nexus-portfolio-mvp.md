@@ -143,13 +143,15 @@ Limites e constraints protegem concorrência; hash ou checagem prévia isolados 
 
 **Interfaces:** render.yaml define apenas Static Site e Web Service gratuito. API usa PORT; DATABASE_URL TLS e segredo somente no backend; conexão direta para migrações configurada no ambiente do comando, não no bundle. Perfil portfolio, Redis desligado e registro público desabilitado até existir controle de abuso.
 
-- [ ] Testar configuração de produção: segredo padrão recusado, SQLite recusado no perfil publicado e ausência de banco/health sem falsa prontidão.
-- [ ] Definir build/start/redirect SPA/origens explícitas, timeouts e pool compatíveis com Neon. Não criar Postgres temporário do Render.
-- [ ] Implementar migração controlada de release: conferir alvo/ambiente, aplicar Alembic e registrar revisão sem imprimir segredo; validar contra banco descartável.
-- [ ] Validar Blueprint com ferramenta oficial disponível e confirmar diff sem secrets; registrar quando a validação externa não estiver disponível.
-- [ ] Criar recursos somente dentro das cotas gratuitas e conectar contas necessárias. Se faltar acesso, registrar o passo exato pendente; não inventar URL de deploy.
-- [ ] Executar smoke test público: login, revisão, commit, confirmação, cancelamento, persistência após restart e estado de inicialização/cold start.
-- [ ] Testar exportação e restauração do banco fictício, registrar limitações e commitar a documentação validada.
+- [x] Testar configuração de produção: segredo padrão recusado, SQLite recusado no perfil publicado e ausência de banco/health sem falsa prontidão.
+- [x] Definir build/start/redirect SPA/origens explícitas, timeouts e pool compatíveis com Neon. Não criar Postgres temporário do Render.
+- [x] Implementar migração controlada de release: conferir alvo/ambiente, aplicar Alembic e registrar revisão sem imprimir segredo; validar contra banco descartável.
+- [x] Validar Blueprint com schema oficial e planejamento do Render; conferir diff sem secrets. CLI não instalado.
+- [x] Criar/adotar recursos somente gratuitos e conectar Neon dedicado; URLs verificadas no relatório.
+- [x] Executar smoke público de login, revisão, commit, confirmação, cancelamento e persistência após redeploy; inicialização/readiness e UI indisponível verificados. Cold start por hibernação natural não cronometrado.
+- [x] Testar exportação e restauração do banco fictício, registrar limitações e commitar a documentação validada.
+
+Evidências M5, commits, deploys e limitações: [VALIDATION_M5.md](../../VALIDATION_M5.md).
 
 Não marcar M5 concluída só porque render.yaml foi escrito.
 

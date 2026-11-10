@@ -5,7 +5,10 @@ Atualizado em 2026-11-08. Estado: arquitetura e escopo definidos; implementaçã
 Checkpoint de execução em 2026-11-09: M0–M2 implementados e validados localmente,
 conforme [VALIDATION_M2.md](VALIDATION_M2.md) e relatórios anteriores. O [perfil público](VALIDATION_PROFILE.md)
 também foi validado localmente. M3/M4 concluídos localmente com interface TypeScript,
-seed, E2E e clone limpo/Compose; [evidências](VALIDATION_UI.md). Integração, CI no GitHub e deploy ainda pendentes.
+seed, E2E e clone limpo/Compose; [evidências](VALIDATION_UI.md). M0–M5 integrados à
+main, CI backend/frontend aprovado e publicação Render + Neon verificada com
+smoke público, persistência após redeploy e backup/restauração;
+[evidências M5](VALIDATION_M5.md). M6 permanece pendente.
 
 ## 1. Objetivo
 
