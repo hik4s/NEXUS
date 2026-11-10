@@ -46,10 +46,10 @@ services:
     name: nexus-portfolio-ui
     runtime: static
     branch: main
-    # Keep all static-site paths repository-relative when adopting the existing
-    # service, avoiding overlapping rootDir and publish-path updates in one sync.
-    buildCommand: cd frontend && npm ci && npm run build
-    staticPublishPath: frontend/dist
+    # When adopting a service, apply root/build/publish together via Update Fields.
+    rootDir: frontend/
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
     autoDeployTrigger: "off"
     envVars:
       - key: NODE_VERSION
