@@ -97,8 +97,8 @@ secrets de serviços já existentes. `generateValue:true` preserva secrets exist
 
 ## Frontend
 
-Static Site, Root Directory `frontend`, Node `24.21.0`, build
-`npm ci && npm run build`, publish directory `dist`.
+Static Site, Root Directory vazio (raiz do repositório), Node `24.21.0`, build
+`cd frontend && npm ci && npm run build`, publish directory `frontend/dist`.
 Defina `VITE_API_BASE_URL=https://HOST_DA_API/api/v1` antes do build.
 O Blueprint reescreve `/*` para `/index.html`. Alterar essa variável requer novo
 build, não apenas restart da API. Não publicar pelo Dockerfile de desenvolvimento.
