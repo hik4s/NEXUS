@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     APP_PROFILE: Literal['full', 'portfolio'] = 'full'
     PUBLIC_REGISTRATION_ENABLED: bool = True
     DB_TIMEOUT_SECONDS: int = Field(default=3, ge=1, le=30)
+    DB_POOL_SIZE: int = Field(default=2, ge=1, le=10)
+    DB_MAX_OVERFLOW: int = Field(default=1, ge=0, le=10)
+    DB_POOL_RECYCLE_SECONDS: int = Field(default=300, ge=30, le=3600)
     APP_NAME: str = "NEXUS API"
     APP_VERSION: str = "0.18.0"
     API_V1_PREFIX: str = "/api/v1"

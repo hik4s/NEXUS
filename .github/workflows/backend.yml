@@ -8,6 +8,8 @@ on:
       - "docker-compose.yml"
       - "scripts/db-check.ps1"
       - "scripts/seed_demo.py"
+      - "scripts/migrate_release.py"
+      - "render.yaml"
   pull_request:
     paths:
       - "backend/**"
@@ -15,6 +17,8 @@ on:
       - "docker-compose.yml"
       - "scripts/db-check.ps1"
       - "scripts/seed_demo.py"
+      - "scripts/migrate_release.py"
+      - "render.yaml"
 
 jobs:
   test:

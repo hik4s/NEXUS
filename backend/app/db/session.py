@@ -18,6 +18,9 @@ if database_url.get_backend_name() == 'sqlite':
 elif database_url.get_backend_name() == 'postgresql':
     connect_args = {'connect_timeout': settings.DB_TIMEOUT_SECONDS}
 engine_options = {'pool_pre_ping': True, 'connect_args': connect_args}
+if database_url.get_backend_name() == 'postgresql':
+    engine_options.update(pool_size=settings.DB_POOL_SIZE, max_overflow=settings.DB_MAX_OVERFLOW,
+        pool_recycle=settings.DB_POOL_RECYCLE_SECONDS)
 if not (database_url.get_backend_name() == 'sqlite' and database_url.database in {None, '', ':memory:'}):
     engine_options['pool_timeout'] = settings.DB_TIMEOUT_SECONDS
 engine = create_engine(settings.DATABASE_URL, **engine_options)

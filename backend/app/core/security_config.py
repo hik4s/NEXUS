@@ -1,3 +1,7 @@
+from urllib.parse import urlsplit
+
+from sqlalchemy.engine import make_url
+
 from app.core.config import settings
 
 _INSECURE_DEFAULT = "nexus-dev-secret-key-change-before-production-please"
@@ -15,6 +19,18 @@ def validate_security_configuration() -> None:
                 raise RuntimeError('PUBLIC_REGISTRATION_ENABLED must be false for the public portfolio deployment')
             if not settings.DATABASE_URL.startswith('postgresql+psycopg://'):
                 raise RuntimeError('The production portfolio requires PostgreSQL with psycopg')
+            if make_url(settings.DATABASE_URL).query.get('sslmode') not in {'require', 'verify-ca', 'verify-full'}:
+                raise RuntimeError('TLS is required for the production portfolio database')
+            origins = settings.cors_origins()
+            for origin in origins:
+                parsed = urlsplit(origin)
+                if (parsed.scheme != 'https' or not parsed.hostname or '*' in origin
+                        or parsed.username or parsed.password or parsed.path or parsed.query or parsed.fragment):
+                    raise RuntimeError('CORS_ORIGINS must contain explicit HTTPS origins')
+            if not origins:
+                raise RuntimeError('CORS_ORIGINS must contain explicit HTTPS origins')
+            if not settings.trusted_hosts() or any('*' in host for host in settings.trusted_hosts()):
+                raise RuntimeError('TRUSTED_HOSTS must contain explicit host names')
         if settings.APP_PROFILE == 'full' and settings.STORAGE_BACKEND == "s3" and not settings.S3_BUCKET:
             raise RuntimeError("S3_BUCKET is required in production when STORAGE_BACKEND=s3")
 
