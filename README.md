@@ -12,7 +12,7 @@ O NEXUS explora a integração entre clientes, vendas, estoque, compras e finan�
 
 **[Abrir a demonstração pública](https://nexus-portfolio-ui.onrender.com/)**
 
-Recrutadores e demais visitantes podem acessar o site e criar sua própria conta para experimentar o aplicativo. Siga o cadastro e as orientações de acesso exibidas na interface. Use somente dados fictícios na avaliação.
+Recrutadores e demais visitantes podem abrir o site para conhecer a interface. Na verificação de 11/11/2026, a tela publicada oferecia login com conta de demonstração provisionada, sem opção visível de cadastro. Para experimentar a jornada autenticada, solicite uma conta de demonstração ao responsável pelo projeto. Use somente dados fictícios na avaliação.
 
 Os documentos de validação M0–M5 registram os controles e a configuração observados naquelas etapas; o acesso atual da demonstração é apresentado aqui.
 
@@ -26,7 +26,7 @@ A arquitetura usa **React/TypeScript + FastAPI + PostgreSQL**, com publicação 
 - [Readiness da API](https://nexus-up1i.onrender.com/readiness)
 - [Deploy e operação](docs/DEPLOY_RENDER_NEON.md) · [evidências M5](docs/VALIDATION_M5.md)
 
-Para avaliar o aplicativo, crie sua própria conta no site. Senhas não são publicadas neste repositório. Use somente dados fictícios.
+O acesso autenticado usa conta de demonstração provisionada, conforme a tela publicada observada. Senhas não são publicadas neste repositório. Use somente dados fictícios.
 O plano gratuito pode hibernar: aguarde a inicialização e consulte o estado salvo
 antes de decidir repetir uma operação. Deploys são manuais para executar a
 migração controlada antes de publicar código novo.
