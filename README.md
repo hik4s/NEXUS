@@ -4,7 +4,7 @@
 
 O NEXUS explora a integração entre clientes, vendas, estoque, compras e finanças, com permissões por empresa, auditoria e processamento assíncrono. A proposta é transformar operações isoladas em fluxos de negócio rastreáveis.
 
-**Estado atual:** MVP de portfólio publicado no Render com PostgreSQL no Neon. M0–M5 validados: jornada pública, isolamento entre empresas, persistência após redeploy e backup/restauração. Release editorial, vídeo e apresentação final de portfólio pertencem a M6.
+**Estado atual:** MVP de portfólio publicado no Render com PostgreSQL no Neon. M0–M5 com evidências registradas: jornada pública, isolamento entre empresas, persistência após redeploy e backup/restauração. O cold start após hibernação natural ainda não foi cronometrado. Release editorial, vídeo e apresentação final de portfólio pertencem a M6.
 
 [![Backend](https://github.com/hik4s/NEXUS/actions/workflows/backend.yml/badge.svg)](https://github.com/hik4s/NEXUS/actions/workflows/backend.yml)
 
@@ -122,25 +122,26 @@ npm run build
 
 O [workflow backend](.github/workflows/backend.yml) instala dependências, compila os módulos Python, verifica Alembic e executa pytest. Testes locais não substituem validação das migrações, concorrência e recuperação no PostgreSQL/Redis reais.
 
-## O que ainda precisa de validação
+## Validações registradas e limites atuais
 
 | Área | Situação |
 | --- | --- |
-| Backend de negócio | Código e testes presentes; validar jornadas integradas no banco-alvo |
-| Frontend MVP | Jornada TypeScript integrada e E2E local aprovado; demais módulos continuam fora do recorte |
-| PostgreSQL e Redis | Configuração presente; homologação operacional pendente no checkpoint |
+| Backend de negócio | Jornada do MVP validada em PostgreSQL e no ambiente publicado; demais módulos exigem validação própria |
+| Frontend MVP | Jornada TypeScript integrada, E2E local e smoke público registrados em M5; demais módulos continuam fora do recorte |
+| PostgreSQL | Neon e persistência após redeploy validados; ensaio pontual de backup/restauração documentado em M5 |
+| Redis e workers | Fora do MVP público; configuração existente não comprova homologação operacional |
 | IA | Provedor mock padrão e integração configurável; uso real e qualidade precisam de avaliação |
 | AWS | Terraform presente; não há confirmação de implantação real no checkpoint |
 | Desktop e offline | Evoluções de produto; não demonstrados pelo frontend atual |
 
-## Próximas entregas prioritárias
+## Marcos concluídos e próxima entrega
 
 1. M0 validado localmente: [baseline PostgreSQL](docs/VALIDATION_MVP.md).
 2. M1 validado localmente: [atomicidade, concorrência e idempotência](docs/VALIDATION_M1.md).
 3. M2 e Task 5 validados localmente: [revisão/importação de pedidos](docs/VALIDATION_M2.md) e [perfil público restrito](docs/VALIDATION_PROFILE.md).
-4. M3–M4 validados localmente: [interface TypeScript, seed, E2E e clone limpo/Compose](docs/VALIDATION_UI.md). CI configurado, execução no GitHub pendente.
-5. M5: configurar Render + Neon e validar persistência, cold start e acesso entre empresas.
-6. M6: publicar release, vídeo, screenshots e relatório de testes.
+4. M3–M4 validados localmente: [interface TypeScript, seed, E2E e clone limpo/Compose](docs/VALIDATION_UI.md). CI backend e frontend/E2E com execuções de sucesso registradas em [M5](docs/VALIDATION_M5.md).
+5. M5 publicado e validado: [Render + Neon, smoke público, isolamento, persistência após redeploy e backup/restauração](docs/VALIDATION_M5.md). Cold start após hibernação natural permanece sem medição.
+6. **Próxima entrega — M6:** consolidar release, vídeo, screenshots e apresentação final. Para disponibilizar acesso demonstrativo, revisar contas, credenciais e controle de abuso conforme os limites de M5.
 
 Workers, IA e AWS são evoluções posteriores. O código existente é preservado; a existência de serviços ou configurações não comprova homologação operacional.
 
