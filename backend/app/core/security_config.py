@@ -9,6 +9,11 @@ _INSECURE_DEFAULT = "nexus-dev-secret-key-change-before-production-please"
 
 def validate_security_configuration() -> None:
     env = settings.APP_ENV.lower().strip()
+    if settings.AUTH_PROVIDER == 'supabase':
+        parsed = urlsplit(settings.SUPABASE_URL)
+        if (parsed.scheme != 'https' or not parsed.hostname or parsed.username or parsed.password
+                or parsed.path not in {'', '/'} or parsed.query or parsed.fragment):
+            raise RuntimeError('SUPABASE_URL must be the explicit HTTPS project origin')
     if env in {"production", "prod"}:
         if settings.SECRET_KEY == _INSECURE_DEFAULT or len(settings.SECRET_KEY) < 32:
             raise RuntimeError("SECRET_KEY must be a unique secret of at least 32 characters in production")
