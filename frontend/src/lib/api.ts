@@ -1,6 +1,9 @@
 import type { Page } from './types';
 
 const messages: Record<string, string> = {
+  account_link_required: 'Este e-mail já possui uma conta legada. Solicite a migração do acesso.',
+  account_inactive: 'Esta conta está desativada.',
+  auth_unavailable: 'Não foi possível validar sua sessão. Aguarde um momento e tente novamente.',
   invalid_credentials: 'E-mail ou senha não conferem.',
   unauthorized: 'Sua sessão terminou. Entre novamente para continuar.',
   forbidden: 'Seu perfil não permite esta ação.',

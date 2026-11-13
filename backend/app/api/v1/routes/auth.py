@@ -4,7 +4,10 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.core.config import settings
-from app.identity.dependencies import get_current_user
+from app.identity.dependencies import get_current_user, bearer_scheme
+from fastapi.security import HTTPAuthorizationCredentials
+from app.identity.supabase import verify_identity
+from app.services.external_auth_service import provision_workspace
 from app.identity.security import create_access_token, create_refresh_token, decode_refresh_token
 from app.models.user import User
 from app.schemas.auth import LoginRequest, RefreshRequest, RegisterRequest, TokenResponse, UserResponse
@@ -14,12 +17,30 @@ from app.services.presentation import user_response
 router = APIRouter(prefix="/auth")
 
 
+def require_legacy_auth() -> None:
+    if settings.AUTH_PROVIDER != 'legacy':
+        raise HTTPException(403, detail={'code':'managed_auth','message':'Use o login do Supabase.'})
+
+
+@router.post('/bootstrap', response_model=UserResponse)
+def bootstrap(request: Request, credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+              db: Session = Depends(get_db)) -> UserResponse:
+    if settings.AUTH_PROVIDER != 'supabase':
+        raise HTTPException(404, detail='External auth is not enabled')
+    if credentials is None or credentials.scheme.lower() != 'bearer':
+        raise HTTPException(401, detail='Authentication required')
+    identity=verify_identity(credentials.credentials)
+    return user_response(provision_workspace(db,identity,request=request))
+
+
+
 @router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
 def register(
     payload: RegisterRequest,
     request: Request,
     db: Session = Depends(get_db),
 ) -> TokenResponse:
+    require_legacy_auth()
     if not settings.PUBLIC_REGISTRATION_ENABLED:
         raise HTTPException(status_code=403, detail={'code': 'registration_disabled', 'message': 'Cadastro público indisponível.'})
     try:
@@ -39,6 +60,7 @@ def login(
     request: Request,
     db: Session = Depends(get_db),
 ) -> TokenResponse:
+    require_legacy_auth()
     result = authenticate_user(db, str(payload.email), payload.password, request=request)
     if result is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
@@ -55,6 +77,7 @@ def refresh(
     payload: RefreshRequest,
     db: Session = Depends(get_db),
 ) -> TokenResponse:
+    require_legacy_auth()
     try:
         user_id = decode_refresh_token(payload.refresh_token)
     except (ValueError, TypeError, InvalidTokenError):
