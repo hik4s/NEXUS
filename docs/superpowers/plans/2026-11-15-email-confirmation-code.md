@@ -21,17 +21,17 @@ email OTP usa tipo correto; teste real não dispara mensagens a terceiros.
 
 ## Task 1 — Verificação por link e código
 
-- [ ] RED: testes de formulário OTP/cadastro/reenvio, link explícito sem auto-consumo,
+- [x] RED: testes de formulário OTP/cadastro/reenvio, link explícito sem auto-consumo,
   URL limpa, código inválido e erro legado orientado.
-- [ ] Implementar EmailConfirmation.tsx e emailConfirmation.ts, integrar App e
+- [x] Implementar EmailConfirmation.tsx e emailConfirmationLink.ts, integrar App e
   SupabaseLoginPage, mapear erros de callback, adicionar CSS focado.
-- [ ] GREEN: suíte completa frontend, typecheck/build e smoke de navegador.
+- [x] GREEN: suíte completa frontend, typecheck/build e smoke de navegador.
 
 ## Task 2 — Template e publicação
 
-- [ ] Criar supabase/templates/confirmation.html e instruções/templates versionados.
-- [ ] Renderizar prévia sintética desktop/mobile e inspecionar legibilidade/links.
-- [ ] Revisão independente, testes reais de verifyOtp com contas sintéticas,
+- [x] Criar supabase/templates/confirmation.html e instruções/templates versionados.
+- [x] Renderizar prévia sintética desktop/mobile e inspecionar legibilidade/links.
+- [x] Revisão independente, testes reais de verifyOtp com contas sintéticas,
   corrigir regressões; abrir/integrar PR após CI.
-- [ ] Publicar UI e template sem substituir SMTP/OAuth; validar configuração real.
-- [ ] Atualizar handoff/evidências e informar limites verificados.
+- [x] Publicar UI e template sem substituir SMTP/OAuth; validar configuração real.
+- [x] Atualizar handoff/evidências e informar limites verificados.

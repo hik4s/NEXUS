@@ -59,3 +59,28 @@ de spam dependem do provedor; a nova aparência não promete classificação na 
 Publicar frontend compatível antes de substituir o template “Confirm sign up” do
 NEXUS Auth. Preservar SMTP Brevo, demais templates, OAuth, plano gratuito e dados
 existentes. Confirmar publicação e testes HTTPS no complemento de release.
+
+### Release verificado
+
+- [PR #4](https://github.com/hik4s/NEXUS/pull/4) integrado; commit publicado da UI
+  `49c9201dd7c0af83100f3bea4c840ff6212cc06f`.
+- [CI frontend](https://github.com/hik4s/NEXUS/actions/runs/43729363925): success.
+- Render `nexus-portfolio-ui`, deploy `dep-dbsssfbm8hqs73cc2v70`: **live**.
+  Backend/Neon não exigiram outro deploy nem migração.
+- Template e assunto “Confirme seu e-mail e abra seu workspace · NEXUS” salvos no
+  projeto NEXUS Auth. Após reload do painel, o HTML foi copiado do editor e
+  comparado ao conteúdo preparado; prévia mostrou botão e código. SMTP e demais
+  templates permaneceram intactos.
+- Teste em HTTPS público, com duas novas contas sintéticas e provas reais:
+  código confirmou endereço e abriu workspace; link limpou a URL, não confirmou
+  no carregamento e confirmou somente após clique. Sucesso exibiu a identidade
+  retornada pelo provedor. Ambos preservaram sessão após reload e passaram em
+  viewport de 390 px. Contas sintéticas e seus workspaces foram removidos.
+- Não foi necessário reenviar nem alterar a conta real que motivou o incidente:
+  ela já estava confirmada. Mensagens futuras usam o novo template; aparência e
+  conteúdo foram publicados, mas a entrega SMTP dessa nova versão ainda não foi
+  medida com um destinatário real. Nenhum e-mail foi enviado a terceiros no teste.
+
+Handoff e memória raiz foram atualizados. Próximos trabalhos independentes:
+homologação OAuth/recuperação completa e reputação/entrega do remetente, conforme
+os limites da release anterior.
