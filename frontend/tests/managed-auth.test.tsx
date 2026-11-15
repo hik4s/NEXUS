@@ -104,3 +104,16 @@ it('stops refreshing automatically when the API rejects the refreshed identity t
  expect(result.current.loading).toBe(false);expect(result.current.error).not.toBe('');
  expect(vi.mocked(fetch).mock.calls.length).toBeLessThanOrEqual(2);
 });
+
+it('keeps old implicit callbacks isolated from restored SDK sessions until explicit authentication',async()=>{
+ history.replaceState(null,'','/#access_token=old-implicit-token');const {auth,emit}=fake();
+ vi.stubGlobal('fetch',vi.fn(async()=>Response.json(user)));
+ const {result}=renderHook(()=>useManagedAuth(auth));
+ act(()=>emit('INITIAL_SESSION',session));
+ await waitFor(()=>expect(result.current.loading).toBe(false));
+ act(()=>emit('SIGNED_IN',session));act(()=>emit('TOKEN_REFRESHED',session));
+ expect(result.current.user).toBeNull();expect(result.current.session).toBeNull();
+ expect(result.current.error).toContain('senha');expect(fetch).not.toHaveBeenCalled();
+ act(()=>result.current.acceptAuthenticatedSession(session));
+ await waitFor(()=>expect(result.current.user).toEqual(user));
+});

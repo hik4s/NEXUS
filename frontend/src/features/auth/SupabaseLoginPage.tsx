@@ -1,25 +1,17 @@
 import {getAuthStorage} from './authStorage';
 import {useState} from 'react';
 import type {FormEvent} from 'react';
-import type {SupabaseClient} from '@supabase/supabase-js';
+import type {Session,SupabaseClient} from '@supabase/supabase-js';
 import {AuthFrame} from './AuthFrame';
 import {Icon} from '../../components/ui';
+import {EmailCodeForm} from './EmailCodeForm';
+import {authMessage} from './authMessages';
+export {authMessage} from './authMessages';
 
 export function callbackUrl(recovery=false) {return getAuthStorage().callbackUrl(recovery);}
-export function authMessage(error:unknown):string {
- const code=error && typeof error==='object' && 'code' in error ? String(error.code) : '';
- const messages:Record<string,string>={
-  invalid_credentials:'E-mail ou senha não conferem.',email_not_confirmed:'Confirme seu e-mail antes de entrar.',
-  user_already_exists:'Este e-mail já possui uma conta. Entre ou recupere sua senha.',
-  weak_password:'Use uma senha mais forte, com pelo menos 8 caracteres.',
-  over_email_send_rate_limit:'Aguarde alguns minutos antes de solicitar outro e-mail.',
-  over_request_rate_limit:'Muitas tentativas. Aguarde um momento e tente novamente.',
-  same_password:'Escolha uma senha diferente da anterior.',
- };
- return messages[code]||'Não foi possível concluir o acesso. Tente novamente em instantes.';
-}
-export function SupabaseLoginPage({auth,expired,recovery=false,onRecovered}:{auth:SupabaseClient;expired:boolean;recovery?:boolean;onRecovered?:()=>void}) {
- const [mode,setMode]=useState<'login'|'signup'|'recover'>('login');
+export function SupabaseLoginPage({auth,expired,recovery=false,onRecovered,onAuthenticated}:{auth:SupabaseClient;expired:boolean;recovery?:boolean;onRecovered?:()=>void;onAuthenticated?:(session:Session)=>void}) {
+ const [mode,setMode]=useState<'login'|'signup'|'recover'|'confirm'>('login');
+ const [justSent,setJustSent]=useState(false);
  const [email,setEmail]=useState('');const [password,setPassword]=useState('');const [confirmation,setConfirmation]=useState('');
  const [busy,setBusy]=useState(false);const [error,setError]=useState('');const [notice,setNotice]=useState('');
  async function run(work:()=>Promise<void>){if(busy)return;setBusy(true);setError('');setNotice('');try{await work();}catch(e){setError(authMessage(e));}finally{setBusy(false);}}
@@ -32,10 +24,11 @@ export function SupabaseLoginPage({auth,expired,recovery=false,onRecovered}:{aut
    setPassword('');setConfirmation('');onRecovered?.();return;
   }
   if(mode==='recover'){const result=await auth.auth.resetPasswordForEmail(email,{redirectTo:callbackUrl(true)});if(result.error)throw result.error;setNotice('Confira seu e-mail. Se houver uma conta, você receberá um link de recuperação.');return;}
-  if(mode==='signup'){const result=await auth.auth.signUp({email,password,options:{emailRedirectTo:callbackUrl()}});if(result.error)throw result.error;if(!result.data.session)setNotice('Confirme seu e-mail pelo link enviado para concluir o cadastro e entrar.');return;}
-  const result=await auth.auth.signInWithPassword({email,password});if(result.error)throw result.error;
+  if(mode==='signup'){const result=await auth.auth.signUp({email,password,options:{emailRedirectTo:callbackUrl()}});if(result.error)throw result.error;if(!result.data.session){setPassword('');setConfirmation('');setJustSent(true);setMode('confirm');}else onAuthenticated?.(result.data.session);return;}
+  const result=await auth.auth.signInWithPassword({email,password});if(result.error)throw result.error;if(result.data.session)onAuthenticated?.(result.data.session);
  });}
  const submitLabel=recovery?'Salvar nova senha':mode==='signup'?'Criar minha conta':mode==='recover'?'Enviar recuperação':'Entrar no workspace';
+ if(mode==='confirm'&&!recovery)return <AuthFrame note="Use o botão do e-mail ou o código — não é necessário confirmar duas vezes."><EmailCodeForm auth={auth} initialEmail={email} justSent={justSent} onVerified={session=>{onAuthenticated?.(session);setMode('login');setNotice('E-mail confirmado. Entrando no seu workspace…');}} onBack={()=>{setJustSent(false);switchMode('login');}}/></AuthFrame>;
  return <AuthFrame note="Acesso livre. No primeiro login, seu workspace é criado com dados separados das outras contas.">
   {expired&&<div className="notice warning" role="status">Sua sessão terminou. Entre novamente para continuar.</div>}
   {recovery?<div className="auth-panel-heading"><h2>Defina sua nova senha</h2><p>Depois de salvar, você poderá continuar no seu workspace.</p></div>:<>
@@ -50,6 +43,6 @@ export function SupabaseLoginPage({auth,expired,recovery=false,onRecovered}:{aut
    <button className="button primary" disabled={busy}>{busy?'Aguarde…':submitLabel}<Icon name="arrow" size={18}/></button>
   </form>
   {error&&<div className="notice error" role="alert">{error}</div>}{notice&&<div className="notice success" role="status">{notice}</div>}
-  {!recovery&&<div className="auth-options">{mode==='login'?<><button type="button" onClick={()=>switchMode('recover')} disabled={busy}>Esqueci minha senha</button><button type="button" onClick={()=>switchMode('signup')} disabled={busy}>Criar conta</button></>:<button type="button" onClick={()=>switchMode('login')} disabled={busy}>Voltar para entrar</button>}</div>}
+  {!recovery&&<div className="auth-options">{mode==='login'?<><button type="button" onClick={()=>switchMode('recover')} disabled={busy}>Esqueci minha senha</button><button type="button" onClick={()=>switchMode('signup')} disabled={busy}>Criar conta</button><button type="button" onClick={()=>{setJustSent(false);switchMode('confirm');}} disabled={busy}>Confirmar com código</button></>:<button type="button" onClick={()=>switchMode('login')} disabled={busy}>Voltar para entrar</button>}</div>}
  </AuthFrame>;
 }

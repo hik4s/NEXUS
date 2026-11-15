@@ -13,3 +13,12 @@
 .session-notice { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:100; max-width:calc(100% - 32px); }
 .login-card .notice { margin-top:16px; }
 @media(max-width:480px) { .social-auth { grid-template-columns:1fr; } }
+.confirmation-help { font-size:12px!important; line-height:1.6!important; color:#667789; margin:10px 0 18px!important; }
+.login-card .confirmation-code { letter-spacing:.18em; font-size:20px; font-weight:650; }
+.login-card .confirmation-code::placeholder { letter-spacing:normal; font-size:13px; font-weight:400; }
+.email-confirmation-intro { margin:26px 0 30px; padding-bottom:26px; border-bottom:1px solid #dce4ec; }
+.email-confirmation-intro h2,.email-confirmation-success h2 { font-size:25px; letter-spacing:-.6px; margin:12px 0; }
+.email-confirmation-intro p,.email-confirmation-success p { font-size:14px!important; line-height:1.7!important; margin-bottom:22px!important; }
+.email-confirmation-success { padding:30px 0 16px; }
+.confirmation-check { display:grid; place-items:center; width:54px; height:54px; border-radius:18px; background:#e5f4ed; color:#186b4d; font-size:28px; }
+.email-code-panel .auth-options button:disabled { color:#788594; cursor:default; text-decoration:none; }

@@ -1,15 +1,15 @@
 import {AuthFrame} from './AuthFrame';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import type {SupabaseClient} from '@supabase/supabase-js';
+import type {Session,SupabaseClient} from '@supabase/supabase-js';
 import {SupabaseLoginPage} from './SupabaseLoginPage';
 import { ApiClient } from '../../lib/api';
 import type { Login } from '../../lib/types';
 import { useAction } from '../../lib/hooks';
 import { ErrorNotice, Icon } from '../../components/ui';
 
-type LoginProps={client:ApiClient;onLogin:(login:Login)=>void;expired:boolean;auth?:SupabaseClient;recovery?:boolean;onRecovered?:()=>void};
-export function LoginPage(props:LoginProps){return props.auth?<SupabaseLoginPage auth={props.auth} expired={props.expired} recovery={props.recovery} onRecovered={props.onRecovered}/>:<LegacyLoginPage {...props}/>;}
+type LoginProps={client:ApiClient;onLogin:(login:Login)=>void;expired:boolean;auth?:SupabaseClient;recovery?:boolean;onRecovered?:()=>void;onAuthenticated?:(session:Session)=>void};
+export function LoginPage(props:LoginProps){return props.auth?<SupabaseLoginPage auth={props.auth} expired={props.expired} recovery={props.recovery} onRecovered={props.onRecovered} onAuthenticated={props.onAuthenticated}/>:<LegacyLoginPage {...props}/>;}
 function LegacyLoginPage({client,onLogin,expired}:LoginProps) {
   const [email, setEmail] = useState(''); const [password, setPassword] = useState(''); const action = useAction();
   function submit(event: FormEvent) { event.preventDefault(); void action.run(async () => { const login = await client.post<Login>('/auth/login', { email, password }); onLogin(login); }); }
