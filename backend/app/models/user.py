@@ -13,6 +13,7 @@ class User(Base):
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
     company_id: Mapped[UUID] = mapped_column(ForeignKey("companies.id", ondelete="CASCADE"), index=True)
+    supabase_subject: Mapped[UUID | None] = mapped_column(Uuid, nullable=True, unique=True, index=True)
     full_name: Mapped[str] = mapped_column(String(160))
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String(255))

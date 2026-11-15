@@ -8,6 +8,8 @@ class Settings(BaseSettings):
     APP_ENV: str = "development"
     APP_PROFILE: Literal['full', 'portfolio'] = 'full'
     PUBLIC_REGISTRATION_ENABLED: bool = True
+    AUTH_PROVIDER: Literal['legacy', 'supabase'] = 'legacy'
+    SUPABASE_URL: str = ''
     DB_TIMEOUT_SECONDS: int = Field(default=3, ge=1, le=30)
     DB_POOL_SIZE: int = Field(default=2, ge=1, le=10)
     DB_MAX_OVERFLOW: int = Field(default=1, ge=0, le=10)

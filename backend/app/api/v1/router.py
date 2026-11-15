@@ -28,7 +28,7 @@ api_router.include_router(intelligence.router, tags=["intelligence"])
 
 # Exact paths and methods keep new legacy endpoints out of the public MVP.
 PORTFOLIO_ROUTES = {
-    '/auth/register': {'POST'}, '/auth/login': {'POST'}, '/auth/refresh': {'POST'}, '/auth/me': {'GET'},
+    '/auth/bootstrap': {'POST'}, '/auth/register': {'POST'}, '/auth/login': {'POST'}, '/auth/refresh': {'POST'}, '/auth/me': {'GET'},
     '/health': {'GET'}, '/health/ready': {'GET'},
     '/companies/me': {'GET'}, '/companies/{company_id}': {'GET'},
     '/companies/{company_id}/products': {'GET', 'POST'},

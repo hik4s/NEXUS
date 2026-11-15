@@ -7,6 +7,9 @@ from jwt import InvalidTokenError
 from sqlalchemy.orm import Session
 
 from app.db.session import get_db
+from app.core.config import settings
+from app.identity.supabase import verify_identity
+from app.services.external_auth_service import external_user
 from app.identity.security import decode_access_token
 from app.models.user import User
 from app.rbac.service import user_has_permission
@@ -20,6 +23,13 @@ def get_current_user(
 ) -> User:
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication required")
+
+    if settings.AUTH_PROVIDER == 'supabase':
+        identity = verify_identity(credentials.credentials)
+        user = external_user(db, identity)
+        if user is None or not user.is_active:
+            raise HTTPException(401, detail='User not found or inactive')
+        return user
 
     try:
         user_id: UUID = decode_access_token(credentials.credentials)
