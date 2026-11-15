@@ -52,6 +52,7 @@ def test_first_login_private_and_idempotent(auth):
     {'iss':'https://other.supabase.co/auth/v1'}, {'aud':'anon'},
     {'exp':datetime.now(timezone.utc)-timedelta(minutes=1)}, {'sub':'not-a-uuid'},
     {'role':'service_role'}, {'is_anonymous':True},
+    {'session_id':1}, {'session_id':[]}, {'session_id':{}}, {'session_id':None},
 ])
 def test_invalid_claims(auth,changes):
     with TestClient(app) as client:
@@ -100,3 +101,33 @@ def test_existing_email_is_not_automatically_linked(auth,monkeypatch):
         assert response.status_code==409
         with SessionLocal() as db:
             assert db.scalar(select(User).where(User.email==email)).supabase_subject is None
+
+
+def test_bootstrap_accepts_same_subject_committed_between_identity_and_email_checks(auth,monkeypatch):
+    from app.services import external_auth_service as service
+    original=service.external_user
+    inserted=False
+    def concurrent_login(db,identity):
+        nonlocal inserted
+        found=original(db,identity)
+        if found is None and not inserted:
+            inserted=True
+            with SessionLocal() as other:
+                service.provision_workspace(other,identity)
+        return found
+    monkeypatch.setattr(service,'external_user',concurrent_login)
+    token=auth()
+    with TestClient(app) as client:
+        response=client.post('/api/v1/auth/bootstrap',headers=headers(token))
+        assert response.status_code==200,response.text
+        assert client.get('/api/v1/auth/me',headers=headers(token)).json()['id']==response.json()['id']
+
+
+def test_managed_admin_cannot_reserve_an_unverified_users_email(auth):
+    token=auth()
+    target=f'{uuid4().hex}@example.com'
+    with TestClient(app) as client:
+        assert client.post('/api/v1/auth/bootstrap',headers=headers(token)).status_code==200
+        response=client.post('/api/v1/users',headers=headers(token),json={'full_name':'Reserved','email':target,'password':'ReservedStrong123!','role':'admin'})
+        assert response.status_code==403,response.text
+        assert client.post('/api/v1/auth/bootstrap',headers=headers(auth(email=target))).status_code==200

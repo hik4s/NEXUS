@@ -1,5 +1,7 @@
 import {expect,it,afterEach,vi} from 'vitest';
 import {createAuthStorage} from '../src/features/auth/authStorage';
+import type {Session} from '@supabase/supabase-js';
+const recoverySession={user:{id:'account-a'},access_token:'header.'+btoa(JSON.stringify({session_id:'session-a'}))+'.signature'} as Session;
 class MemoryStorage implements Storage {
  data=new Map<string,string>();get length(){return this.data.size;} clear(){this.data.clear();}getItem(k:string){return this.data.get(k)??null;}key(i:number){return [...this.data.keys()][i]??null;}removeItem(k:string){this.data.delete(k);}setItem(k:string,v:string){this.data.set(k,v);}
 }
@@ -19,10 +21,27 @@ it('shares only an expiring per-flow PKCE verifier with a fresh callback tab',()
  a.storage.setItem(a.channelKey+'-code-verifier','"verifier-only"');
  const tabB=new MemoryStorage();const b=createAuthStorage(tabB,local,url.search);
  expect(b.storage.getItem(b.channelKey+'-code-verifier')).toBe('"verifier-only"');
- expect(b.isRecovery()).toBe(true);
- expect(createAuthStorage(tabB,local).isRecovery()).toBe(true);
- b.clearRecovery();expect(createAuthStorage(tabB,local).isRecovery()).toBe(false);
+ expect(b.isRecovery(recoverySession)).toBe(false);
+ b.setRecovery(recoverySession);
+ expect(createAuthStorage(tabB,local).isRecovery(recoverySession)).toBe(true);
+ b.clearRecovery();expect(createAuthStorage(tabB,local).isRecovery(recoverySession)).toBe(false);
  b.storage.removeItem(b.channelKey+'-code-verifier');expect(local.length).toBe(0);
+});
+
+it('does not trust recovery intent from a callback URL without provider proof',()=>{
+ const tab=new MemoryStorage();const runtime=createAuthStorage(tab,new MemoryStorage(),'?intent=recovery');
+ expect(runtime.isRecovery(recoverySession)).toBe(false);
+ expect(tab.getItem('nexus-auth-recovery')).toBeNull();
+});
+
+it('restores recovery only for the same account and provider session',()=>{
+ const tab=new MemoryStorage(),shared=new MemoryStorage();const runtime=createAuthStorage(tab,shared);
+ runtime.setRecovery(recoverySession);
+ expect(createAuthStorage(tab,shared).isRecovery(recoverySession)).toBe(true);
+ const anotherSession={...recoverySession,access_token:'header.'+btoa(JSON.stringify({session_id:'session-b'}))+'.signature'};
+ expect(runtime.isRecovery(anotherSession)).toBe(false);
+ expect(runtime.isRecovery({...recoverySession,user:{...recoverySession.user,id:'account-b'}})).toBe(false);
+ expect(runtime.isRecovery(null)).toBe(false);
 });
 it('expires unused PKCE proof without persisting a bearer session',()=>{
  vi.useFakeTimers();vi.setSystemTime(new Date('2026-11-13T10:00:00Z'));

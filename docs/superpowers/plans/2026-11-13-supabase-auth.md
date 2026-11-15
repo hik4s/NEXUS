@@ -21,4 +21,7 @@ bootstrap concorrente; callback/renovação após logout; confirmação e recupe
 - [x] UI/fluxos: estados de primeiro acesso, erros claros, sessão e isolamento; E2E.
 - [ ] Revisão, configuração de publicação, validação de provedores e evidências M6.
 
+Continuação 15/11: revisão e correções concluídas localmente; publicação e OAuth
+real continuam pendentes. [Evidências da revisão](../../AUTH_REVIEW_2026-11-15.md).
+
 Estado e evidências: [handoff](../../HANDOFF_2026-11-13.md). Publicação e OAuth real pendentes; M6 continua aberto.

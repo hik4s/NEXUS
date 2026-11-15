@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.audit.service import record_audit
+from app.core.config import settings
 from app.identity.security import hash_password
 from app.models.rbac import Role
 from app.models.user import User
@@ -17,6 +18,8 @@ def _validate_role_keys(role_keys: list[str]) -> None:
 
 
 def create_company_user(db: Session, actor: User, payload: UserCreateRequest, request=None) -> User:
+    if settings.AUTH_PROVIDER == 'supabase':
+        raise PermissionError('O cadastro de usuários por senha local está desativado neste modo de acesso.')
     _validate_role_keys(payload.role_keys)
     if set(payload.role_keys) - {"employee"} and not user_has_permission(db, actor.id, "roles:manage"):
         raise PermissionError("Only privileged administrators can assign elevated roles")

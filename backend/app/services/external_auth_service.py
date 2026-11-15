@@ -21,8 +21,8 @@ def provision_workspace(db: Session, identity: ExternalIdentity, request=None) -
     existing=external_user(db,identity)
     if existing:
         return active(existing)
-    if db.scalar(select(User.id).where(User.email==identity.email)):
-        raise HTTPException(409, detail={'code':'account_link_required','message':'Este e-mail já possui conta legada. Solicite a migração do acesso.'})
+    # Uniqueness is resolved after flush: another request may commit the same
+    # subject between this lookup and the insert. The rollback path re-reads it.
     role=db.scalar(select(Role).where(Role.key=='admin'))
     if role is None:
         raise HTTPException(503, detail={'code':'auth_unavailable','message':'O workspace está iniciando. Tente novamente.'})

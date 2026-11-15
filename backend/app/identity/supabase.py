@@ -29,6 +29,8 @@ def verify_identity(token: str) -> ExternalIdentity:
             options={'require':['sub','iss','aud','exp','iat','session_id','role']}, leeway=5)
         if claims.get('role') != 'authenticated' or claims.get('is_anonymous') is not False:
             raise jwt.InvalidTokenError('Authenticated account required')
+        if not isinstance(claims['sub'], str) or not isinstance(claims['session_id'], str):
+            raise jwt.InvalidTokenError('Invalid identity identifiers')
         subject = UUID(claims['sub'])
         UUID(claims['session_id'])
         email = str(TypeAdapter(EmailStr).validate_python(claims.get('email'))).lower()
