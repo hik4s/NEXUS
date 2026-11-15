@@ -24,4 +24,9 @@ bootstrap concorrente; callback/renovação após logout; confirmação e recupe
 Continuação 15/11: revisão e correções concluídas localmente; publicação e OAuth
 real continuam pendentes. [Evidências da revisão](../../AUTH_REVIEW_2026-11-15.md).
 
+Atualização após aprovação: PR integrado, migração Neon e deploy Render concluídos;
+login por senha/isolamento/reload/logout validados em HTTPS real. Conclusão OAuth
+por uma pessoa e entrega de confirmação/recovery permanecem pendentes, portanto
+o item composto e M6 continuam abertos. [Publicação](../../RELEASE_AUTH_2026-11-15.md).
+
 Estado e evidências: [handoff](../../HANDOFF_2026-11-13.md). Publicação e OAuth real pendentes; M6 continua aberto.
