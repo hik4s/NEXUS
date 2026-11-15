@@ -1,6 +1,7 @@
 # NEXUS — Master Plan
 
-> **Atualização ativa: 2026-11-08 — MVP de portfólio web.**
+> **Atualização ativa: 15/11/2026 — MVP web e autenticação Supabase publicados.**
+> Continuidade: [handoff atual](HANDOFF_2026-11-15.md). Confirmação por link/código e novo template estão publicados; OAuth completo, entrega/recovery e M6 mantêm os limites documentados.
 >
 > A arquitetura e o recorte atuais estão em [MVP_PORTFOLIO.md](docs/MVP_PORTFOLIO.md). Esta atualização prevalece sobre prioridades e infraestrutura de fases anteriores abaixo. A visão ampla de produto permanece como evolução.
 >

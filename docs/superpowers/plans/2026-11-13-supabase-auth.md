@@ -19,14 +19,15 @@ bootstrap concorrente; callback/renovação após logout; confirmação e recupe
 - [x] Frontend: cliente PKCE, sessão, login social/e-mail e recuperação; regressões
   de estados e integração com a API preservando navegação por hash.
 - [x] UI/fluxos: estados de primeiro acesso, erros claros, sessão e isolamento; E2E.
-- [ ] Revisão, configuração de publicação, validação de provedores e evidências M6.
+- [x] Revisão e correções de autenticação; regressões e suites aprovadas.
+- [x] Integração, migração Neon e configuração/deploy API/frontend.
+- [x] Login por senha, isolamento, reload/logout e confirmação por link/código em HTTPS.
+- [x] Novo template de confirmação publicado no NEXUS Auth.
+- [ ] Conclusão OAuth Google/GitHub por uma pessoa real.
+- [ ] Entrega da nova confirmação a destinatário real e recovery completo/nova aba.
+- [ ] Evidências finais de portfólio e M6.
 
-Continuação 15/11: revisão e correções concluídas localmente; publicação e OAuth
-real continuam pendentes. [Evidências da revisão](../../AUTH_REVIEW_2026-11-15.md).
-
-Atualização após aprovação: PR integrado, migração Neon e deploy Render concluídos;
-login por senha/isolamento/reload/logout validados em HTTPS real. Conclusão OAuth
-por uma pessoa e entrega de confirmação/recovery permanecem pendentes, portanto
-o item composto e M6 continuam abertos. [Publicação](../../RELEASE_AUTH_2026-11-15.md).
-
-Estado e evidências: [handoff](../../HANDOFF_2026-11-13.md). Publicação e OAuth real pendentes; M6 continua aberto.
+Estado consolidado em 15/11: [handoff atual](../../../HANDOFF_2026-11-15.md).
+Evidências: [revisão](../../AUTH_REVIEW_2026-11-15.md),
+[publicação](../../RELEASE_AUTH_2026-11-15.md) e
+[link/código](../../EMAIL_CONFIRMATION_2026-11-15.md).

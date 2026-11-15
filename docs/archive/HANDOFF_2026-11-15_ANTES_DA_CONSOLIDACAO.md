@@ -1,0 +1,138 @@
+# Registro histórico anterior à consolidação
+
+Este snapshot preserva a auditoria inicial e os avisos acumulados. Para retomar, use o [handoff atual](../../HANDOFF_2026-11-15.md). Estados de branch, deploy e pendências abaixo pertencem aos checkpoints citados.
+
+> **Confirmação por código e novo e-mail publicados (15/11/2026):** PR #4 integrado; UI live em 49c9201, template pt-BR com botão+OTP salvo no NEXUS Auth. Verificações reais em HTTPS confirmaram código e link com clique explícito, limpeza da URL, workspace correto e sessão após reload; contas sintéticas removidas. CI/43 testes frontend/2 E2E verdes. Ver [evidências](../../docs/EMAIL_CONFIRMATION_2026-11-15.md). A conta real do incidente já estava confirmada; nenhuma senha foi alterada.
+> **Publicação concluída em 15/11/2026:** PR #3 integrado, migração Neon aplicada e API/UI live na revisão ba91b3b. Login por senha, bootstrap idempotente, duas empresas isoladas, reload/logout e mobile foram validados em HTTPS real. Contas sintéticas foram removidas. Conclusão OAuth por pessoa real e entrega de confirmação/recovery ainda pendentes. Ver [registro da publicação](../../docs/RELEASE_AUTH_2026-11-15.md); ele supera as pendências de integração/deploy dos snapshots abaixo.
+> **Continuação de 15/11/2026:** a branch `codex/auth-release-review-2026-11-15` agora contém revisão e correções sobre `ce717d4`. Passaram 187 testes PostgreSQL, 153 SQLite (34 skips), 34 frontend e 2 E2E, além de migrations/drift/typecheck/build. Ver [revisão e próximos passos](../../docs/AUTH_REVIEW_2026-11-15.md). As seções abaixo preservam o snapshot anterior à continuação; a etapa de revisão foi atendida, mas integração e publicação/OAuth real ainda estão pendentes.
+# Handoff atualizado — NEXUS
+
+Data da inspeção: 15/11/2026 (America/Sao_Paulo).
+Memória consolidada: [MEMORIA_PROJETO_2026-11-15.md](../../MEMORIA_PROJETO_2026-11-15.md).
+Documento aditivo: os handoffs anteriores foram preservados.
+
+## Identidade desta cópia
+
+- Diretório: C:/Users/hikas/Documents/Codex/2026-11-15/fa/work/repositories/NEXUS
+- Remoto: https://github.com/hik4s/NEXUS.git
+- Branch: main
+- HEAD: e8646658ecd5b13878ac7e4bcbd0989e7401d327
+- Arquivos rastreados: 299
+
+O texto de produto abaixo combina a branch remota padrão e continuações relevantes. **Não significa que todo o código descrito esteja neste checkout.** Conferir branch/SHA antes de executar; as cópias locais antigas e os avanços não publicados são descritos explicitamente.
+
+## Estado e entregas
+
+ERP modular de portfólio: CSV de pedidos → revisão durável → rascunho → confirmação → estoque/recebível → cancelamento com reversão. Supabase fornece identidade na evolução nova; Neon mantém negócio/RBAC.
+
+- main e864665: M0–M5 com React/TypeScript, FastAPI, SQLAlchemy/Alembic e PostgreSQL Neon. Revisão CSV, idempotência, isolamento entre empresas, confirmação/cancelamento e demo Render têm evidência documental.
+- VALIDATION_M5 registra migração, readiness, duas empresas, persistência após redeploy e ensaio de backup/restauração (59 tabelas/203 registros coincidentes). Não é backup agendado.
+- Branch remota feat/supabase-auth ce717d4 de 13/11 implementa Google/GitHub/e-mail via Supabase, bootstrap atômico de workspace privado/admin, JWT JWKS, PKCE por fluxo e sessão por aba; migração 0552c7d5fe36 preserva contas existentes.
+- O handoff de 13/11 registra correções de isolamento de abas, transferência PKCE para nova aba, recovery/reload e respostas tardias de logout. Essa implementação é distinta do protótipo auth local de 10/11.
+
+## Trabalho a continuar, em ordem
+
+- P0 de release: revisar a branch ce717d4, executar migração Neon antes da ativação, configurar API/frontend coordenadamente e homologar provedores reais, callbacks/confirm/recovery/refresh/logout e duas contas com company_id distintos. Handoff de 13/11 afirma explicitamente que não houve deploy dessa branch.
+- P1: reconciliar o checkout antigo nexus-auth eb141b8 e alterações não commitadas. AUTH_REVIEW_PENDING.md desse protótipo tem achados graves, mas não prova defeitos no código diferente de ce717d4. Reaproveitar cenários de regressão, sem mesclar o protótipo automaticamente.
+- P1: confirmar workspace Render e serviços existentes antes de publicar; preservar auto-deploy off, migração controlada e plano gratuito. Cadastro legado continua desabilitado; bootstrap Supabase é fluxo diferente.
+- P2: M6 (vídeo, release editorial e apresentação), medir cold start após hibernação natural; ampliar paginação de recebíveis/seletor de estoque e acessibilidade.
+- P2: política/agendamento de backup e exercício periódico de restauração. IA, AWS, convites e workers permanentes ficam fora do recorte atual.
+
+## Divergências que a próxima sessão precisa conhecer
+
+main e864665 contém MVP legacy publicado; feat/supabase-auth ce717d4 contém auth nova não declarada publicada. Downloads/NEXUS tem UI JavaScript antiga e trabalho não commitado. Worktree nexus-m0 está em codex/visual-interactions d9a8b8e, não no HEAD remoto novo. Não confundir botões visuais de 10/11 com autenticação funcional.
+
+## Git observado antes de escrever estes dois documentos
+
+O status abaixo inclui trabalho pré-existente. Não foi feito add, commit, push, merge, reset ou checkout nos repositórios existentes. Os novos Markdown ficam não rastreados. Upstream/ahead/behind em cópias antigas pode usar refs locais desatualizadas; o clone de inspeção consultou o remoto em 15/11. Clones de inspeção têm histórico limitado a 30 commits e não provam ancestralidade além desse limite.
+
+~~~text
+## main...origin/main
+~~~
+
+### Alterações rastreadas não staged
+
+~~~text
+Sem diferenças rastreadas não staged.
+~~~
+
+### Alterações staged
+
+~~~text
+Sem diferenças staged.
+~~~
+
+### Stashes preservados
+
+~~~text
+Nenhum stash listado.
+~~~
+
+### Últimos commits desta cópia
+
+~~~text
+e864665 2026-11-11 docs: alinhar acesso da demo a tela publica observada
+7655cb8 2026-11-11 docs: destacar demonstracoes publicas e acesso por cadastro
+20c271a 2026-11-11 docs: reconciliar estado do MVP com evidencias publicadas de M5
+8ad45ae 2026-11-10 docs: record live M5 deployment and verified recovery evidence
+36525c8 2026-11-09 fix: align static site with verified frontend root settings
+495559e 2026-11-09 fix: keep adopted static site build and publish paths consistent
+3887b52 2026-11-09 feat: configure portfolio production release on Render and Neon
+6f08c1a 2026-11-09 docs: record validated M3 M4 portfolio journey and clean clone QA
+~~~
+
+## Mapa da raiz
+
+~~~text
+.github/
+backend/
+demo/
+docs/
+frontend/
+infra/
+NEXUS-roadmap/
+scripts/
+.env.example
+.gitattributes
+.gitignore
+docker-compose.prod.yml
+docker-compose.yml
+MASTER_PLAN.md
+README.md
+render.yaml
+~~~
+
+## Documentos de continuidade nesta árvore rastreada
+
+- MASTER_PLAN.md
+- NEXUS-roadmap/01-FRONTEND.md
+- NEXUS-roadmap/02-BACKEND.md
+- NEXUS-roadmap/03-IA.md
+- docs/BACKEND_PROGRESS.md
+- docs/VALIDATION_M1.md
+- docs/VALIDATION_M2.md
+- docs/VALIDATION_M5.md
+- docs/VALIDATION_MVP.md
+- docs/VALIDATION_PROFILE.md
+- docs/VALIDATION_UI.md
+
+## Retomada e validação
+
+Usar clone limpo da branch correta. Backend: venv + requirements.txt, alembic upgrade head/check e pytest em banco descartável. Frontend: npm ci, npm test -- --run, npm run build; E2E exige NEXUS_TEST_DATABASE_URL descartável com nome nexus_e2e*. Seguir migrate_release.py e DEPLOY_RENDER_NEON para publicação, não executar migração no banco real como teste.
+
+Handoff remoto 13/11: PostgreSQL 181 passed; SQLite 147 passed/34 skipped; Vitest 26; typecheck/build; 2 E2E negócio em legacy. SDK usa endpoint sintético: não comprova login real Google/GitHub. Nesta auditoria apenas fontes/Git foram verificados.
+
+Nesta sessão: conferidos inventário, remotos/branches relevantes, commits, estado local e fontes selecionadas. Não foi feita auditoria exaustiva de cada linha de código nem de todo o histórico de conversas. Nenhuma aprovação de produção é inferida de testes históricos. Próxima sessão deve repetir os checks adequados ao código que realmente irá usar.
+
+## Fontes para aprofundar
+
+- README.md
+- docs/VALIDATION_M5.md
+- docs/VALIDATION_MVP.md
+- docs/DEPLOY_RENDER_NEON.md
+- docs/LOCAL_DEMO.md
+- MASTER_PLAN.md
+- origin/feat/supabase-auth:docs/HANDOFF_2026-11-13.md
+- origin/feat/supabase-auth:docs/RESUMO_2026-11-13.md
+
+Para decisões duráveis e limites de produto, continuar em [MEMORIA_PROJETO_2026-11-15.md](../../MEMORIA_PROJETO_2026-11-15.md). Não copiar arquivos .env, tokens, sessões, bancos, relatórios ou logs operacionais para a memória.

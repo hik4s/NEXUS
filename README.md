@@ -12,7 +12,21 @@ O NEXUS explora a integração entre clientes, vendas, estoque, compras e finan�
 
 **[Abrir a demonstração pública](https://nexus-portfolio-ui.onrender.com/)**
 
-Recrutadores e demais visitantes podem abrir o site para conhecer a interface. A tela publicada em 15/11/2026 oferece Google, GitHub e e-mail, com criação de conta e recuperação de acesso. O primeiro login cria um workspace privado; use somente dados fictícios na avaliação. Login por senha e isolamento entre duas contas foram verificados no site real. A conclusão de OAuth e a entrega de confirmação/recuperação por e-mail ainda estão em homologação; veja [o registro da publicação](docs/RELEASE_AUTH_2026-11-15.md).
+Crie sua conta para experimentar o aplicativo com um workspace privado. A tela
+oferece Google, GitHub e e-mail. No cadastro por e-mail, confirme pelo **botão da
+mensagem ou pelo código**, disponível também em **Confirmar com código** na tela
+de entrada. Basta uma das opções; há reenvio quando necessário. Se o endereço já
+foi confirmado, entre com sua senha. Procure a mensagem também na pasta de spam.
+
+Login por senha, confirmação por link/código, sessão após recarregar, logout e
+isolamento entre duas contas foram verificados no site real com dados sintéticos.
+A conclusão de login Google/GitHub por uma pessoa, a entrega da nova mensagem a
+um destinatário real e a recuperação completa de senha ainda exigem homologação.
+Use somente dados fictícios na avaliação.
+
+- [Estado atual e próximos passos](HANDOFF_2026-11-15.md)
+- [Publicação da autenticação](docs/RELEASE_AUTH_2026-11-15.md)
+- [Confirmação por link/código e novo e-mail](docs/EMAIL_CONFIRMATION_2026-11-15.md)
 
 Os documentos de validação M0–M5 registram os controles e a configuração observados naquelas etapas; o acesso atual da demonstração é apresentado aqui.
 
@@ -20,7 +34,7 @@ Os documentos de validação M0–M5 registram os controles e a configuração o
 
 A jornada do MVP é **importar pedidos CSV → revisar → gerar rascunhos → confirmar venda → atualizar estoque → gerar recebível → cancelar com reversão**. A jornada foi validada com interface e API reais, duas empresas e dados fictícios. Veja [demonstração local](docs/LOCAL_DEMO.md), [evidências M3/M4](docs/VALIDATION_UI.md) e [captura da interface](docs/ui-overview.png).
 
-A arquitetura usa **React/TypeScript + FastAPI + PostgreSQL**, com publicação no Render e banco no Neon. Os controles do perfil público estão descritos em [VALIDATION_PROFILE.md](docs/VALIDATION_PROFILE.md); a sessão da interface fica somente em memória. O recorte não exige worker permanente, Redis ou arquivos locais persistentes.
+A arquitetura usa **React/TypeScript + FastAPI + PostgreSQL**, com publicação no Render e banco no Neon. Os controles do perfil público estão descritos em [VALIDATION_PROFILE.md](docs/VALIDATION_PROFILE.md); o acesso Supabase preserva a sessão na mesma aba por `sessionStorage`; fechar a aba exige novo login. O modo legado local mantém sessão em memória. O recorte não exige worker permanente, Redis ou arquivos locais persistentes.
 
 - [Abrir a demonstração](https://nexus-portfolio-ui.onrender.com)
 - [Readiness da API](https://nexus-up1i.onrender.com/readiness)
@@ -42,7 +56,7 @@ migração controlada antes de publicar código novo.
 | --- | --- |
 | API | Python, FastAPI e Pydantic |
 | Persistência | SQLAlchemy 2, Alembic; SQLite local e configuração PostgreSQL |
-| Identidade | JWT, refresh tokens, RBAC e contexto de empresa |
+| Identidade | Supabase Auth em produção; JWT validado pela API, RBAC e empresa no Neon; modo legado local |
 | Processamento | Workers, scheduler e integração Redis |
 | Interface | React, TypeScript e Vite; jornada MVP conectada |
 | Integrações | HTTPX, Playwright, CSV/XLSX e storage local/S3 |
@@ -110,7 +124,7 @@ npm ci
 npm run dev
 ```
 
-Use o endereço informado pelo Vite. A API padrão é `http://localhost:8000/api/v1`; altere `VITE_API_BASE_URL` quando necessário. Use as contas provisionadas pelo seed para acessar o perfil portfolio. A interface inclui resumo, importações/revisão, pedidos, catálogo/clientes, estoque, recebíveis e auditoria.
+Use o endereço informado pelo Vite. A API padrão é `http://localhost:8000/api/v1`; altere `VITE_API_BASE_URL` quando necessário. No desenvolvimento em modo `legacy` (padrão), use as contas provisionadas pelo seed para acessar o perfil portfolio. Para reproduzir o acesso Supabase, configure `AUTH_PROVIDER`/`SUPABASE_URL` na API e `VITE_AUTH_PROVIDER`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` e `VITE_API_BASE_URL` no frontend; nunca use uma chave secreta no cliente. A interface inclui resumo, importações/revisão, pedidos, catálogo/clientes, estoque, recebíveis e auditoria.
 
 ## Verificar
 
@@ -124,6 +138,8 @@ Na pasta `backend`, com o ambiente de desenvolvimento:
 Na pasta `frontend`:
 
 ```powershell
+npm test -- --run
+npm run typecheck
 npm run build
 ```
 
@@ -135,7 +151,8 @@ O [workflow backend](.github/workflows/backend.yml) instala dependências, compi
 | --- | --- |
 | Backend de negócio | Jornada do MVP validada em PostgreSQL e no ambiente publicado; demais módulos exigem validação própria |
 | Frontend MVP | Jornada TypeScript integrada, E2E local e smoke público registrados em M5; demais módulos continuam fora do recorte |
-| PostgreSQL | Neon e persistência após redeploy validados; ensaio pontual de backup/restauração documentado em M5 |
+| Autenticação e confirmação | Supabase publicado; login por senha e link/código validados em HTTPS; homologação OAuth/entrega/recovery permanece aberta |
+| PostgreSQL | Neon e persistência após redeploy validados; migração de identidade aplicada; ensaio pontual de backup/restauração documentado em M5 |
 | Redis e workers | Fora do MVP público; configuração existente não comprova homologação operacional |
 | IA | Provedor mock padrão e integração configurável; uso real e qualidade precisam de avaliação |
 | AWS | Terraform presente; não há confirmação de implantação real no checkpoint |
@@ -148,12 +165,14 @@ O [workflow backend](.github/workflows/backend.yml) instala dependências, compi
 3. M2 e Task 5 validados localmente: [revisão/importação de pedidos](docs/VALIDATION_M2.md) e [perfil público restrito](docs/VALIDATION_PROFILE.md).
 4. M3–M4 validados localmente: [interface TypeScript, seed, E2E e clone limpo/Compose](docs/VALIDATION_UI.md). CI backend e frontend/E2E com execuções de sucesso registradas em [M5](docs/VALIDATION_M5.md).
 5. M5 publicado e validado: [Render + Neon, smoke público, isolamento, persistência após redeploy e backup/restauração](docs/VALIDATION_M5.md). Cold start após hibernação natural permanece sem medição.
-6. **Próxima entrega — M6:** consolidar release, vídeo, screenshots e apresentação final. Continuar a revisão dos controles de acesso e abuso da demonstração conforme sua evolução.
+6. Autenticação Supabase e confirmação por link/código publicadas em 15/11: [release](docs/RELEASE_AUTH_2026-11-15.md) e [evidências da confirmação](docs/EMAIL_CONFIRMATION_2026-11-15.md).
+7. **Próxima entrega — M6:** consolidar release, vídeo, screenshots e apresentação final. Continuar a revisão dos controles de acesso e abuso da demonstração conforme sua evolução.
 
 Workers, IA e AWS são evoluções posteriores. O código existente é preservado; a existência de serviços ou configurações não comprova homologação operacional.
 
 ## Documentação
 
+- [Handoff atual](HANDOFF_2026-11-15.md) · [memória do projeto](MEMORIA_PROJETO_2026-11-15.md)
 - [Master plan e critérios de aceite](MASTER_PLAN.md)
 - [Trilhas frontend, backend e IA](NEXUS-roadmap)
 - [Arquitetura](docs/architecture/overview.md)
