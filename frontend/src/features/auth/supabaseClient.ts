@@ -16,6 +16,7 @@ export function initializeSession(auth:SupabaseClient):Promise<Session|null>{
  const address=new URL(window.location.href);
  const fragment=new URLSearchParams(address.hash.slice(1));
  const error=address.searchParams.has('error')||fragment.has('error')||fragment.has('access_token');
+ const errorCode=fragment.has('access_token')?'legacy_confirmation_link':address.searchParams.get('error_code')||fragment.get('error_code')||'callback_failed';
  const code=address.searchParams.get('code');
  const flowId=address.searchParams.get('sb_flow_id');
  if(code||error||address.pathname==='/auth/callback'){
@@ -25,7 +26,7 @@ export function initializeSession(auth:SupabaseClient):Promise<Session|null>{
   history.replaceState(null,'',address.pathname+address.search+address.hash);
  }
  const work=(async()=>{
-  if(error)throw new Error('OAuth callback failed');
+  if(error)throw Object.assign(new Error('Authentication callback failed'),{code:errorCode});
   const response=code?await auth.auth.exchangeCodeForSession(code,flowId?{flowId}:undefined):await auth.auth.getSession();
   if(response.error)throw response.error;
   return response.data.session;
