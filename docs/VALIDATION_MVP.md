@@ -1,5 +1,8 @@
 # M0 — validação do baseline
 
+Registro histórico de M0. Para a regressão e os materiais atuais, veja
+[M6 em 16/11/2026](VALIDATION_M6_2026-11-16.md).
+
 Plano: `docs/superpowers/plans/2026-11-08-nexus-portfolio-mvp.md`, Task 1.
 Data: 2026-11-09. Base: `5c0cdaa`. Branch: `codex/m0-postgres`.
 

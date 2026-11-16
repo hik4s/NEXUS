@@ -24,7 +24,8 @@ O usuário confirmou Google/GitHub até o workspace em 15/11. A entrega da nova 
 um destinatário real e a recuperação completa de senha ainda exigem homologação.
 Use somente dados fictícios na avaliação.
 
-- [Estado atual e próximos passos](HANDOFF_2026-11-15.md)
+- [Roteiro para avaliar no site](docs/AVALIAR_NEXUS.md) · [Vídeo da jornada local (33 s)](docs/media/2026-11-16/nexus-jornada.mp4)
+- [Estado atual e próximos passos](HANDOFF_2026-11-16.md)
 - [Publicação da autenticação](docs/RELEASE_AUTH_2026-11-15.md)
 - [Confirmação por link/código e novo e-mail](docs/EMAIL_CONFIRMATION_2026-11-15.md)
 

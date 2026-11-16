@@ -93,3 +93,10 @@ Workspace carregado após login, com espera e opção de recarregar em falha.
 Limpeza proativa de provas PKCE inválidas/vencidas preserva fluxos válidos.
 Build Supabase: entrada 473,20 kB e workspace separado 48,32 kB minificados.
 Validação: [registro de continuidade](docs/NEXUS_LOADING_PLAN_2026-11-15.md).
+
+## Continuidade em 16/11 — preparação de M6
+
+Main afd94f2 já publicada; autenticação não foi refeita. Regressão de 187 backend/46
+frontend/2 E2E aprovada, vídeo local de 33 s e capturas adicionados. Produção permaneceu
+sem mudanças. Integração/tag de M6 e limites operacionais continuam abertos.
+Retomar pelo [handoff de 16/11](HANDOFF_2026-11-16.md).
