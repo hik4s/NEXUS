@@ -20,3 +20,11 @@ Sem mudanças no banco, template de e-mail ou credenciais. Sessões continuam po
 O smoke local do build usa contas sintéticas no provedor/API reais sem enviar e-mail. O navegador isolado ignora CORS somente neste ensaio porque a origem local não está autorizada em produção. Não constitui teste de CORS. As primeiras tentativas sem URL de API correta/sem origem autorizada falharam e removeram suas contas de teste.
 
 Smoke local concluído: falha de download exibiu alerta; recarregar abriu workspace. Código, link, reload e mobile aprovados; limpeza de contas sintéticas confirmada.
+
+## Integração e produção
+
+PR #5 integrado em `a27be2d79846e40b033e26f7f2b4a45296c945bb` após GitHub Actions frontend #15 aprovado (46 testes, build e E2E). Render UI: deploy `dep-dbt6tfmk1f9s73b116i0`, estado live em 16/11 02:47 UTC (15/11 23:47 em São Paulo). API e banco permaneceram sem alterações.
+
+Smoke no site público HTTPS aprovado, sem desativar CORS: bloqueio único do arquivo Workspace gerou alerta e recarregar recuperou a sessão. Confirmação por código e link, URL limpa, prova não consumida pela visita, identificação da conta, reload e mobile passaram. Contas/workspaces sintéticos removidos com confirmação. Nenhum e-mail de teste enviado.
+
+Permanecem entrega real do novo e-mail, recuperação de senha completa, materiais M6, cold start natural e política de backup/restauração.
