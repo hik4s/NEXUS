@@ -1,7 +1,7 @@
 # NEXUS — Master Plan
 
-> **Atualização ativa: 15/11/2026 — MVP web e autenticação Supabase publicados.**
-> Continuidade: [handoff atual](HANDOFF_2026-11-15.md). Confirmação por link/código e novo template estão publicados; OAuth completo, entrega/recovery e M6 mantêm os limites documentados.
+> **Atualização ativa: 16/11/2026 — MVP web e autenticação Supabase publicados.**
+> Continuidade: [handoff atual](HANDOFF_2026-11-16.md). Confirmação por link/código e carregamento do workspace publicados. M6 tem regressão, vídeo e capturas preparados; integração/tag e limites de entrega/recovery continuam documentados.
 >
 > A arquitetura e o recorte atuais estão em [MVP_PORTFOLIO.md](docs/MVP_PORTFOLIO.md). Esta atualização prevalece sobre prioridades e infraestrutura de fases anteriores abaixo. A visão ampla de produto permanece como evolução.
 >
@@ -34,7 +34,7 @@
 - [x] M3 — Interface TypeScript com jornada integrada; [evidências](docs/VALIDATION_UI.md).
 - [x] M4 — Demonstração em clone limpo/Compose e E2E validados; CI remoto backend/frontend aprovado; [evidências](docs/VALIDATION_M5.md).
 - [x] M5 — Publicação Render + Neon, smoke tests públicos, persistência após redeploy e backup/restauração; [evidências](docs/VALIDATION_M5.md).
-- [ ] M6 — Release, vídeo, screenshots e validação de portfólio.
+- [ ] M6 — [Regressão, vídeo e screenshots preparados em 16/11](docs/VALIDATION_M6_2026-11-16.md); integração, CI final e tag/release pendentes.
 
 **Próxima etapa:** Task 8 / M6 — release de portfólio, vídeo e apresentação das evidências. M0–M5 estão integrados à main. CI backend/frontend foi executado com sucesso no GitHub; execução, commits e deploys estão registrados em [VALIDATION_M5.md](docs/VALIDATION_M5.md). Roteiro local em [LOCAL_DEMO.md](docs/LOCAL_DEMO.md).
 

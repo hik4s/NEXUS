@@ -4,6 +4,8 @@ Configuração de release criada em 2026-11-09. O estado comprovado de publicaç
 fica em [VALIDATION_M5.md](VALIDATION_M5.md); a existência deste roteiro não
 comprova que um serviço esteja disponível.
 
+A preparação documental de M6 está em [VALIDATION_M6_2026-11-16.md](VALIDATION_M6_2026-11-16.md). Atualizar somente Markdown/mídia no GitHub não exige novo deploy nem migração.
+
 ## Recursos e custo
 
 O `render.yaml` contém somente `NEXUS` (Web Service Docker, plano Free,

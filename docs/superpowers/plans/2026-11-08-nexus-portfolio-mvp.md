@@ -161,11 +161,13 @@ Não marcar M5 concluída só porque render.yaml foi escrito.
 
 **Interfaces:** usa o fluxo E2E da tarefa 6 e deploy da tarefa 7; todos os resultados são vinculados ao commit testado.
 
-- [ ] Executar regressão backend/PostgreSQL, frontend typecheck/test/build e E2E da release.
-- [ ] Gravar vídeo de até dois minutos e screenshots com dados fictícios; mostrar uma falha além do caminho feliz.
-- [ ] Publicar arquitetura, setup, conta demo limitada, CSV de exemplo, decisões e limites com links verificáveis.
-- [ ] Registrar tempos observados e condições do teste; não alegar economia/escala de empresa sem medição.
+- [x] Executar regressão backend/PostgreSQL, frontend typecheck/test/build e E2E da release.
+- [x] Gravar vídeo de até dois minutos e screenshots com dados fictícios; mostrar uma falha além do caminho feliz.
+- [x] Publicar arquitetura, setup, conta demo limitada, CSV de exemplo, decisões e limites com links verificáveis.
+- [x] Registrar tempos observados e condições do teste; não alegar economia/escala de empresa sem medição.
 - [ ] Revisar conteúdo e diff, criar tag/release e atualizar checklist apenas com evidências.
+
+Evidências da preparação em 16/11: [VALIDATION_M6_2026-11-16.md](../../VALIDATION_M6_2026-11-16.md). Material local, sem nova homologação OAuth/SMTP. Tag/release e CI final pendentes.
 
 ## Auto-revisão do plano
 
