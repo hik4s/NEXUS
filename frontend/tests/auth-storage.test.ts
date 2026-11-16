@@ -68,3 +68,28 @@ it('passes a real SDK PKCE proof to an exchange in a fresh callback tab',async()
  expect(result.error?.name).not.toBe('AuthPKCECodeVerifierMissingError');
  original.auth.stopAutoRefresh();callback.auth.stopAutoRefresh();
 });
+
+it('sweeps abandoned expired and malformed proofs while preserving live flows and unrelated data',()=>{
+ vi.useFakeTimers();vi.setSystemTime(100000);
+ const shared=new MemoryStorage();
+ shared.setItem('nexus-auth-pkce:old',JSON.stringify({value:'expired',expiresAt:100000}));
+ shared.setItem('nexus-auth-pkce:broken','{');
+ shared.setItem('nexus-auth-pkce:invalid',JSON.stringify({value:12,expiresAt:200000}));
+ shared.setItem('nexus-auth-pkce:live',JSON.stringify({value:'live',expiresAt:200000}));
+ shared.setItem('other-app','keep');
+ const runtime=createAuthStorage(new MemoryStorage(),shared);
+ expect(shared.length).toBe(2);
+ expect(shared.getItem('other-app')).toBe('keep');
+ expect(shared.getItem('nexus-auth-pkce:live')).not.toBeNull();
+ vi.setSystemTime(200000);runtime.callbackUrl();
+ expect(shared.length).toBe(1);
+ expect(shared.getItem('other-app')).toBe('keep');
+});
+
+it('rejects a malformed proof inserted after adapter initialization',()=>{
+ const shared=new MemoryStorage();const runtime=createAuthStorage(new MemoryStorage(),shared);
+ const flow=new URL(runtime.callbackUrl()).searchParams.get('flow');
+ shared.setItem(`nexus-auth-pkce:${flow}-code-verifier`,JSON.stringify({value:'invalid',expiresAt:String(Date.now()+60000)}));
+ expect(runtime.storage.getItem(runtime.channelKey+'-code-verifier')).toBeNull();
+ expect(shared.length).toBe(0);
+});
