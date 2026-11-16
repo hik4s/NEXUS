@@ -20,7 +20,7 @@ foi confirmado, entre com sua senha. Procure a mensagem também na pasta de spam
 
 Login por senha, confirmação por link/código, sessão após recarregar, logout e
 isolamento entre duas contas foram verificados no site real com dados sintéticos.
-A conclusão de login Google/GitHub por uma pessoa, a entrega da nova mensagem a
+O usuário confirmou Google/GitHub até o workspace em 15/11. A entrega da nova mensagem a
 um destinatário real e a recuperação completa de senha ainda exigem homologação.
 Use somente dados fictícios na avaliação.
 
@@ -151,7 +151,7 @@ O [workflow backend](.github/workflows/backend.yml) instala dependências, compi
 | --- | --- |
 | Backend de negócio | Jornada do MVP validada em PostgreSQL e no ambiente publicado; demais módulos exigem validação própria |
 | Frontend MVP | Jornada TypeScript integrada, E2E local e smoke público registrados em M5; demais módulos continuam fora do recorte |
-| Autenticação e confirmação | Supabase publicado; login por senha e link/código validados em HTTPS; homologação OAuth/entrega/recovery permanece aberta |
+| Autenticação e confirmação | Supabase publicado; login por senha e link/código validados em HTTPS; OAuth confirmado pelo usuário; entrega/recovery permanecem abertos |
 | PostgreSQL | Neon e persistência após redeploy validados; migração de identidade aplicada; ensaio pontual de backup/restauração documentado em M5 |
 | Redis e workers | Fora do MVP público; configuração existente não comprova homologação operacional |
 | IA | Provedor mock padrão e integração configurável; uso real e qualidade precisam de avaliação |
@@ -181,3 +181,10 @@ Workers, IA e AWS são evoluções posteriores. O código existente é preservad
 - [Terraform](infra/terraform/README.md)
 
 O foco deste portfólio é demonstrar regras de negócio, persistência, autorização e integração entre domínios. Métricas de economia, escala e uso por empresas só devem ser publicadas depois de medidas.
+
+### Continuação de carregamento — 15/11
+
+Workspace carregado após login, com espera e opção de recarregar em falha.
+Limpeza proativa de provas PKCE inválidas/vencidas preserva fluxos válidos.
+Build Supabase: entrada 473,20 kB e workspace separado 48,32 kB minificados.
+Validação: [registro de continuidade](docs/NEXUS_LOADING_PLAN_2026-11-15.md).

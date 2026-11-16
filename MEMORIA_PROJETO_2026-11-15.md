@@ -66,7 +66,7 @@ contas sintéticas, depois removidas. O template foi salvo e reaberto no painel.
 
 E2E de negócio em legacy não comprova OAuth. Geração administrativa de provas
 sem envio não comprova entrega SMTP. Novo visual não corrige reputação do remetente
-por si só. OAuth completo, mensagem nova recebida por destinatário real e recovery
+por si só. OAuth completo foi relatado pelo usuário em 15/11. Mensagem nova recebida por destinatário real e recovery
 fim a fim ainda precisam de evidências. JWT já emitido pode durar até expirar;
 não se promete revogação imediata em todas as chamadas da API.
 
@@ -74,8 +74,7 @@ não se promete revogação imediata em todas as chamadas da API.
 
 Começar pelo handoff, confirmar branch/commit e ambiente antes de alterar algo.
 Não reimplementar as entregas já integradas. Priorizar homologação real dos
-provedores/entrega/recovery e M6; depois operação/backup, cold start, bundle,
-limpeza PKCE e melhorias de paginação/acessibilidade. Histórias locais antigas
+provedores/entrega/recovery e M6; depois operação/backup, cold start e melhorias de paginação/acessibilidade. Histórias locais antigas
 continuam preservadas no [arquivo da auditoria](docs/archive/MEMORIA_PROJETO_2026-11-15_ANTES_DA_CONSOLIDACAO.md).
 
 ## Fontes
@@ -87,3 +86,10 @@ continuam preservadas no [arquivo da auditoria](docs/archive/MEMORIA_PROJETO_202
 - [Template versionado](supabase/templates/README.md)
 - [Deploy controlado](docs/DEPLOY_RENDER_NEON.md)
 - [Master plan](MASTER_PLAN.md)
+
+### Continuação de carregamento — 15/11
+
+Workspace carregado após login, com espera e opção de recarregar em falha.
+Limpeza proativa de provas PKCE inválidas/vencidas preserva fluxos válidos.
+Build Supabase: entrada 473,20 kB e workspace separado 48,32 kB minificados.
+Validação: [registro de continuidade](docs/NEXUS_LOADING_PLAN_2026-11-15.md).

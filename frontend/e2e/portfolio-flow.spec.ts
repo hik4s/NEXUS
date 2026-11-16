@@ -25,7 +25,13 @@ test('duas empresas: importar, revisar, confirmar, cancelar e recuperar a sessã
   const horizonte = await auth(request, 'admin.horizonte@example.com');
   const initial = await (await request.get(`${API}/inventory/stock`, { headers: aurora })).json();
   const starting = initial.find((row: { product_sku: string }) => row.product_sku === 'PROD-A');
-  await page.goto('/'); await login(page);
+  const workspaceRequests:string[]=[];
+  page.on('request',request=>{if(/\/src\/Workspace\.tsx(?:\?|$)/.test(request.url()))workspaceRequests.push(request.url());});
+  await page.goto('/');
+  await expect(page.getByRole('button',{name:'Entrar no workspace'})).toBeVisible();
+  expect(workspaceRequests).toHaveLength(0);
+  await login(page);
+  expect(workspaceRequests.length).toBeGreaterThan(0);
   await navigate(page, 'Importações');
   const ref = `E2E-${Date.now()}`;
   await page.locator('input[type=file]').setInputFiles({ name: 'pedidos-e2e.csv', mimeType: 'text/csv', buffer: Buffer.from(`external_order_id,sku,quantity\n${ref},PROD-A,2\n${ref}-ERRO,SKU-INEXISTENTE,1\n`) });

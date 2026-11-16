@@ -10,6 +10,18 @@ function recoveryIdentity(session:Session|null):string|null{
  }catch{return null;}
 }
 export function createAuthStorage(tab:Storage,shared:Storage,search=window.location.search){
+ const sweepProofs=()=>{
+  const keys=Array.from({length:shared.length},(_,index)=>shared.key(index));
+  for(const key of keys){
+   if(!key?.startsWith('nexus-auth-pkce:'))continue;
+   try{
+    const entry=JSON.parse(shared.getItem(key)||'null');
+    if(entry&&typeof entry.value==='string'&&typeof entry.expiresAt==='number'&&Number.isFinite(entry.expiresAt)&&entry.expiresAt>Date.now())continue;
+   }catch{/* Malformed proofs cannot be exchanged. */}
+   shared.removeItem(key);
+  }
+ };
+ sweepProofs();
  const channelKey=`nexus-auth-${crypto.randomUUID()}`;
  const params=new URLSearchParams(search);
  const incoming=params.get('flow');
@@ -22,7 +34,7 @@ export function createAuthStorage(tab:Storage,shared:Storage,search=window.locat
   getItem(key:string){
    if(!key.endsWith('-code-verifier'))return tab.getItem(canonical(key));
    const name=proofKey(key);if(!name)return null;
-   try{const entry=JSON.parse(shared.getItem(name)||'null');if(entry&&entry.expiresAt>Date.now()&&typeof entry.value==='string')return entry.value;}catch{/* Invalid proofs are discarded. */}
+   try{const entry=JSON.parse(shared.getItem(name)||'null');if(entry&&typeof entry.value==='string'&&typeof entry.expiresAt==='number'&&Number.isFinite(entry.expiresAt)&&entry.expiresAt>Date.now())return entry.value;}catch{/* Invalid proofs are discarded. */}
    shared.removeItem(name);return null;
   },
   setItem(key:string,value:string){
@@ -32,7 +44,7 @@ export function createAuthStorage(tab:Storage,shared:Storage,search=window.locat
   removeItem(key:string){if(key.endsWith('-code-verifier')){const name=proofKey(key);if(name)shared.removeItem(name);}else tab.removeItem(canonical(key));},
  };
  return{channelKey,storage,
-  callbackUrl(recovery=false){flow=crypto.randomUUID();tab.setItem('nexus-auth-flow',flow);const url=new URL('/auth/callback',window.location.origin);url.searchParams.set('flow',flow);if(recovery)url.searchParams.set('intent','recovery');return url.toString();},
+  callbackUrl(recovery=false){sweepProofs();flow=crypto.randomUUID();tab.setItem('nexus-auth-flow',flow);const url=new URL('/auth/callback',window.location.origin);url.searchParams.set('flow',flow);if(recovery)url.searchParams.set('intent','recovery');return url.toString();},
   isRecovery:(session:Session|null)=>{const identity=recoveryIdentity(session);return !!identity&&tab.getItem('nexus-auth-recovery')===identity;},
   setRecovery:(session:Session)=>{const identity=recoveryIdentity(session);if(identity)tab.setItem('nexus-auth-recovery',identity);else tab.removeItem('nexus-auth-recovery');},
   clearRecovery:()=>tab.removeItem('nexus-auth-recovery'),
